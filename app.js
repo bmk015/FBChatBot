@@ -271,7 +271,7 @@ function receivedMessage(event) {
         sendFileMessage(senderID);
         break;
 
-      case 'button':
+      case 'customer support':
         sendButtonMessage(senderID);
         break;
 
@@ -547,10 +547,6 @@ function sendButtonMessage(recipientId) {
             url: "https://www.allstate.com/",
             title: "Open Web URL"
           }, {
-            type: "postback",
-            title: "Trigger Postback",
-            payload: "DEVELOPER_DEFINED_PAYLOAD"
-          }, {
             type: "phone_number",
             title: "Call Phone Number",
             payload: "+16505551234"
@@ -581,7 +577,7 @@ function sendGenericMessage(recipientId) {
             title: "Allstate",
             subtitle: "Allstate Insurance Company",
             item_url: "https://www.allstate.com/",               
-            image_url: SERVER_URL   + "/public/assets/rift.png",
+            image_url: SERVER_URL   + "/assets/wallpaper.jpg",
             buttons: [{
               type: "web_url",
               url: "https://www.allstate.com/",
@@ -595,7 +591,7 @@ function sendGenericMessage(recipientId) {
             title: "Auto",
             subtitle: "Get Auto Insurance",
             item_url: "https://www.allstate.com/auto-insurance.aspx",               
-            image_url: SERVER_URL   + "/public/assets/touch.png",
+            image_url: SERVER_URL   + "/assets/wallpaper.jpg",
             buttons: [{
               type: "web_url",
               url: "https://www.allstate.com/auto-insurance.aspx",
