@@ -418,8 +418,6 @@ function sendImageMessage(recipientId) {
       }
     }
   };
- 
-  console.log(__dirname + '/views');
   callSendAPI(messageData);
 }
 
@@ -583,7 +581,7 @@ function sendGenericMessage(recipientId) {
             title: "Allstate",
             subtitle: "Allstate Insurance Company",
             item_url: "https://www.allstate.com/",               
-            image_url: SERVER_URL + "/assets/rift.png",
+            image_url: __dirname  + "/assets/rift.png",
             buttons: [{
               type: "web_url",
               url: "https://www.allstate.com/",
@@ -597,7 +595,7 @@ function sendGenericMessage(recipientId) {
             title: "Auto",
             subtitle: "Get Auto Insurance",
             item_url: "https://www.allstate.com/auto-insurance.aspx",               
-            image_url: SERVER_URL + "/assets/touch.png",
+            image_url: __dirname  + "/assets/touch.png",
             buttons: [{
               type: "web_url",
               url: "https://www.allstate.com/auto-insurance.aspx",
