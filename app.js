@@ -12,7 +12,8 @@ const
   crypto = require('crypto'),
   express = require('express'),
   https = require('https'),  
-  request = require('request');
+  request = require('request'),
+  template = require('message_templates.js');
 
 var app = express();
 app.set('port', process.env.PORT || 5000);
@@ -520,7 +521,11 @@ function sendTextMessage(recipientId, messageText) {
     },
     message: {
       text: messageText,
-      metadata: "DEVELOPER_DEFINED_METADATA"
+      metadata: "DEVELOPER_DEFINED_METADATA",
+      setting_type:greeting,
+      greeting:{
+        text:"Hello, welcome to Allstate Insurbot."
+      }
     }
   };
 
