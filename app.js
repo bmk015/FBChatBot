@@ -546,10 +546,10 @@ function sendButtonMessage(recipientId) {
         type: "template",
         payload: {
           template_type: "button",
-          text: "This is test text",
+          text: "Allstate Insurance Company",
           buttons:[{
             type: "web_url",
-            url: "https://www.oculus.com/en-us/rift/",
+            url: "https://www.allstate.com/",
             title: "Open Web URL"
           }, {
             type: "postback",
@@ -583,13 +583,13 @@ function sendGenericMessage(recipientId) {
         payload: {
           template_type: "generic",
           elements: [{
-            title: "rift",
-            subtitle: "Next-generation virtual reality",
-            item_url: "https://www.oculus.com/en-us/rift/",               
+            title: "Allstate",
+            subtitle: "Allstate Insurance Company",
+            item_url: "https://www.allstate.com/",               
             image_url: SERVER_URL + "/assets/rift.png",
             buttons: [{
               type: "web_url",
-              url: "https://www.oculus.com/en-us/rift/",
+              url: "https://www.allstate.com/",
               title: "Open Web URL"
             }, {
               type: "postback",
@@ -597,13 +597,13 @@ function sendGenericMessage(recipientId) {
               payload: "Payload for first bubble",
             }],
           }, {
-            title: "touch",
-            subtitle: "Your Hands, Now in VR",
-            item_url: "https://www.oculus.com/en-us/touch/",               
+            title: "Auto",
+            subtitle: "Get Auto Insurance",
+            item_url: "https://www.allstate.com/auto-insurance.aspx",               
             image_url: SERVER_URL + "/assets/touch.png",
             buttons: [{
               type: "web_url",
-              url: "https://www.oculus.com/en-us/touch/",
+              url: "https://www.allstate.com/auto-insurance.aspx",
               title: "Open Web URL"
             }, {
               type: "postback",
