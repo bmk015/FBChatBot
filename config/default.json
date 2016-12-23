@@ -2,5 +2,5 @@
     "appSecret": "fdd9f286a7aaea40b25b63ff61af0842",
     "pageAccessToken": "EAAYT1arebaMBAC2KbOsZAvIJnw6QjOqE47xPcYfkic7X3M3oMVZAilf0wOrqLSRCrsHgAp6S9RqLbWZCgzRZA7uTdSjHlyCZB0Vm791kJy2q41ZBh6QhlOiRwwmsJ8ZBg3NkWRUhpAnbTqRvsW8ME4xQETUIqzmT71GPTs1IeEoxwZDZD",
     "validationToken": "my_life_but_not_my_choice",
-    "serverURL": "https://bmkchatbot.azurewebsites.net/public/"
+    "serverURL": "https://bmkchatbot.azurewebsites.net/public"
 }
