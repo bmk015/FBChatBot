@@ -81,7 +81,7 @@ app.post('/webhook', function (req, res) {
   var data = req.body;
 
   // Make sure this is a page subscription
-  /*if (data.object == 'page') {
+  if (data.object == 'page') {
     // Iterate over each entry
     // There may be multiple if batched
     data.entry.forEach(function(pageEntry) {
@@ -106,13 +106,13 @@ app.post('/webhook', function (req, res) {
           console.log("Webhook received unknown messagingEvent: ", messagingEvent);
         }
       });
-    });*/
+    });
 
     // Assume all went well.
     //
     // You must send back a 200, within 20 seconds, to let us know you've 
     // successfully received the callback. Otherwise, the request will time out.
-    callSendAPI("test");
+   
     res.sendStatus(200);
   }
 });
@@ -799,12 +799,8 @@ function callSendAPI(messageData) {
   request({
     uri: 'https://graph.facebook.com/v2.6/me/messages',
     qs: {
-         access_token: PAGE_ACCESS_TOKEN ,
-         setting_type: 'call_to_actions',
-         thread_state: 'new_thread',
-            call_to_actions: [{
-                payload: 'GET_START'
-            }]},
+         access_token: PAGE_ACCESS_TOKEN 
+    },
     method: 'POST',
     json: messageData
 
