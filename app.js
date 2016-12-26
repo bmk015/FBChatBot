@@ -818,49 +818,40 @@ function callSendAPI(messageData) {
   });  
 }
 
-function callWelcomeSendAPI() {
-  request({
-    uri: 'https://graph.facebook.com/v2.6/me/thread_settings?access_token=${PAGE_ACCESS_TOKEN}',
-    qs: {
-        setting_type: 'call_to_actions',
-        thread_state: 'new_thread',
-            call_to_actions: [{
-                payload: 'GET_START'
-            }]
-        },
-    method: 'POST',
-    json: {
-        message: {
-            attachment: {
-                type: "template",
-                payload: {
-                    template_type: "generic",
-                    elements: {
-                        "title": "Allstate Insurbot",
-                        "subtitle": "Welcome to Allstate Insurbot",
-                        "image_url": SERVER_URL   + "/assets/wallpaper.jpg"
-                    }
-                }
-            }
-        }
-    }
 
-  }, function (error, response, body) {
-    if (!error && response.statusCode == 200) {
-      var recipientId = body.recipient_id;
-      var messageId = body.message_id;
-
-      if (messageId) {
-        console.log("Successfully sent message with id %s to recipient %s", 
-          messageId, recipientId);
-      } else {
-      console.log("Successfully called Send API for recipient %s", 
-        recipientId);
-      }
-    } else {
-      console.error("Failed calling Send API", response.statusCode, response.statusMessage, body.error);
-    }
-  });  
+functioncallWelcomeSendAPI(){
+	request({
+		uri: 'https: //graph.facebook.com/v2.6/me/thread_settings',
+		qs: {
+			access_token: PAGE_ACCESS_TOKEN,
+			setting_type: 'call_to_actions',
+			thread_state: 'new_thread',
+			call_to_actions: [{
+				payload: 'GET_START'
+			}]
+		},
+		method: 'POST',
+		json: true
+	},
+	function(error,
+	response,
+	body){
+		if(!error&&response.statusCode==200){
+			varrecipientId=body.recipient_id;varmessageId=body.message_id;if(messageId){
+				console.log("Successfully sent message with id %s to recipient %s",
+				messageId,
+				recipientId);
+			}else{
+				console.log("Successfully called Send API for recipient %s",
+				recipientId);
+			}
+		}else{
+			console.error("Failed calling Send API",
+			response.statusCode,
+			response.statusMessage,
+			body.error);
+		}
+	});
 }
 
 // Start server
