@@ -854,9 +854,8 @@ request({
 }
 function callWelcomeSendAPI(){
 	request({
-		uri: 'https: //graph.facebook.com/v2.6/me/thread_settings',
+		uri: 'https: //graph.facebook.com/v2.6/me/thread_settings?access_token='+PAGE_ACCESS_TOKEN,
 		qs: {
-			access_token: PAGE_ACCESS_TOKEN,
 			setting_type: 'call_to_actions',
 			thread_state: 'new_thread',
 			call_to_actions: [{
