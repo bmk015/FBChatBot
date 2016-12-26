@@ -105,7 +105,7 @@ app.post('/webhook', function (req, res) {
           console.log("Webhook received unknown messagingEvent: ", messagingEvent);
         }
       });
-    }); */
+    }); 
 
     // Assume all went well.
     //
