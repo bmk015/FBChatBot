@@ -353,13 +353,19 @@ function receivedPostback(event) {
   // The 'payload' param is a developer-defined field which is set in a postback 
   // button for Structured Messages. 
   var payload = event.postback.payload;
-
+ 
   console.log("Received postback for user %d and page %d with payload '%s' " + 
     "at %d", senderID, recipientID, payload, timeOfPostback);
 
   // When a postback is called, we'll send a message back to the sender to 
   // let them know it was successful
-  sendTextMessage(senderID, "Postback called");
+	if(payload =="GET_START"){
+	GetStarted(senderID);
+	}
+	else
+	{  
+		sendTextMessage(senderID, "Postback called");
+	    }
 }
 
 /*
@@ -817,7 +823,35 @@ function callSendAPI(messageData) {
     }
   });  
 }
-
+function GetStarted(recipientId){
+request({
+    method: 'POST',
+    uri: 'https://graph.facebookrece.com/v2.6/me/messages',
+    qs: {
+        access_token: PAGE_ACCESS_TOKEN
+    },
+    json: {
+        recipient: {
+            id: recipientId
+        },
+        message: {
+            attachment: {
+                type: "template",
+                payload: {
+                    template_type: "generic",
+                    elements: {
+                        "title": "Your Title",
+                        "subtitle": "Welcome to my messenger bot",
+                        "image_url": SERVER_URL + "/assets/riftsq.png"
+                    }
+                }
+            }
+        }
+    }
+}, (err, res, body) => {
+    // Deal with the response
+});
+}
 function callWelcomeSendAPI(){
 	request({
 		uri: 'https: //graph.facebook.com/v2.6/me/thread_settings',
