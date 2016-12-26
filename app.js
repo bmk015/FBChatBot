@@ -81,12 +81,9 @@ app.post('/webhook', function (req, res) {
 
   // Make sure this is a page subscription
   if (data.object == 'page') {
-    //call welcome api
-    callWelcomeSendAPI();
-    //
     // Iterate over each entry
     // There may be multiple if batched
-  /*  data.entry.forEach(function(pageEntry) {
+   data.entry.forEach(function(pageEntry) {
       var pageID = pageEntry.id;
       var timeOfEvent = pageEntry.time;
 
@@ -871,6 +868,9 @@ function callWelcomeSendAPI() {
 // certificate authority.
 app.listen(app.get('port'), function() {
   console.log('Node app is running on port', app.get('port'));
+    //call welcome api
+    callWelcomeSendAPI();
+    //
 });
 
 module.exports = app;
