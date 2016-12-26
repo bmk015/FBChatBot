@@ -12,8 +12,7 @@ const
   crypto = require('crypto'),
   express = require('express'),
   https = require('https'),  
-  request = require('request'),
-  template = require('message_templates.js');
+  request = require('request');
 
 var app = express();
 app.set('port', process.env.PORT || 5000);
@@ -112,7 +111,6 @@ app.post('/webhook', function (req, res) {
     //
     // You must send back a 200, within 20 seconds, to let us know you've 
     // successfully received the callback. Otherwise, the request will time out.
-   
     res.sendStatus(200);
   }
 });
@@ -798,9 +796,7 @@ function sendAccountLinking(recipientId) {
 function callSendAPI(messageData) {
   request({
     uri: 'https://graph.facebook.com/v2.6/me/messages',
-    qs: {
-         access_token: PAGE_ACCESS_TOKEN 
-    },
+    qs: { access_token: PAGE_ACCESS_TOKEN },
     method: 'POST',
     json: messageData
 
