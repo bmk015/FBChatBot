@@ -818,7 +818,40 @@ function callSendAPI(messageData) {
   });  
 }
 
-
+function callWelcomeSendAPI(){
+	request({
+		uri: 'https: //graph.facebook.com/v2.6/me/thread_settings',
+		qs: {
+			access_token: PAGE_ACCESS_TOKEN,
+			setting_type: 'call_to_actions',
+			thread_state: 'new_thread',
+			call_to_actions: [{
+				payload: 'GET_START'
+			}]
+		},
+		method: 'POST',
+		json: true
+	},
+	function(error,
+	response,
+	body){
+		if(!error&&response.statusCode==200){
+			varrecipientId=body.recipient_id;varmessageId=body.message_id;if(messageId){
+				console.log("Successfully sent message with id %s to recipient %s",
+				messageId,
+				recipientId);
+			}else{
+				console.log("Successfully called Send API for recipient %s",
+				recipientId);
+			}
+		}else{
+			console.error("Failed calling Send API",
+			response.statusCode,
+			response.statusMessage,
+			body.error);
+		}
+	});
+}
 
 // Start server
 // Webhooks must be available via SSL with a certificate signed by a valid 
@@ -826,7 +859,7 @@ function callSendAPI(messageData) {
 app.listen(app.get('port'), function() {
   console.log('Node app is running on port', app.get('port'));
     //call welcome api
-   // callWelcomeSendAPI();
+    callWelcomeSendAPI();
     //
 });
 
