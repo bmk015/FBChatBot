@@ -81,9 +81,12 @@ app.post('/webhook', function (req, res) {
 
   // Make sure this is a page subscription
   if (data.object == 'page') {
+    //call welcome api
+    callWelcomeSendAPI();
+    //
     // Iterate over each entry
     // There may be multiple if batched
-    data.entry.forEach(function(pageEntry) {
+  /*  data.entry.forEach(function(pageEntry) {
       var pageID = pageEntry.id;
       var timeOfEvent = pageEntry.time;
 
@@ -105,7 +108,7 @@ app.post('/webhook', function (req, res) {
           console.log("Webhook received unknown messagingEvent: ", messagingEvent);
         }
       });
-    });
+    }); */
 
     // Assume all went well.
     //
@@ -799,6 +802,51 @@ function callSendAPI(messageData) {
     qs: { access_token: PAGE_ACCESS_TOKEN },
     method: 'POST',
     json: messageData
+
+  }, function (error, response, body) {
+    if (!error && response.statusCode == 200) {
+      var recipientId = body.recipient_id;
+      var messageId = body.message_id;
+
+      if (messageId) {
+        console.log("Successfully sent message with id %s to recipient %s", 
+          messageId, recipientId);
+      } else {
+      console.log("Successfully called Send API for recipient %s", 
+        recipientId);
+      }
+    } else {
+      console.error("Failed calling Send API", response.statusCode, response.statusMessage, body.error);
+    }
+  });  
+}
+
+function callWelcomeSendAPI() {
+  request({
+    uri: 'https://graph.facebook.com/v2.6/me/thread_settings?access_token=${PAGE_ACCESS_TOKEN}',
+    qs: {
+        setting_type: 'call_to_actions',
+        thread_state: 'new_thread',
+            call_to_actions: [{
+                payload: 'GET_START'
+            }]
+        },
+    method: 'POST',
+    json: {
+        message: {
+            attachment: {
+                type: "template",
+                payload: {
+                    template_type: "generic",
+                    elements: {
+                        "title": "Allstate Insurbot",
+                        "subtitle": "Welcome to Allstate Insurbot",
+                        "image_url": SERVER_URL   + "/assets/wallpaper.jpg"
+                    }
+                }
+            }
+        }
+    }
 
   }, function (error, response, body) {
     if (!error && response.statusCode == 200) {
