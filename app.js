@@ -330,7 +330,8 @@ function receivedPostback(event) {
         // the text we received.
         switch (payload) {
             case 'Get Live Help':
-                sendGetLiveHelpMessage(sender);
+                // sendGetLiveHelpMessage(sender);
+                sendCustomerSupportMessage(sender);
                 break;
 
             case 'Got it':
@@ -386,7 +387,6 @@ function receivedPostback(event) {
     }
 
     function sendGetLiveHelpMessage(recipientId) {
-
         var messageData = {
             recipient: {
                 id: recipientId
@@ -396,23 +396,20 @@ function receivedPostback(event) {
                     type: "template",
                     payload: {
                         template_type: "button",
-                        text: "Hi, I'm the Allstate Insurbot and I'm here to help \nTo get started, simply select one of the menu options below or type a question or phrase.If you need any assistance at any time,just type 'help'",
-                        buttons: [
-                           {
-                               type: "postback",
-                               title: "Got it",
-                               payload: "Got it"
-                           },
-                            {
-                                type: "postback",
-                                title: "Get Live Help",
-                                payload: "Get Live Help"
-                            }
-                        ]
+                        text: "No problem! Would you rather talk here through messenger or chat with someone over the phone?'",
+                        buttons: [{
+                            type: "postback",
+                            title: "Use Messenger",
+                            payload: "USE_MESSENGER"
+                        }, {
+                            type: "phone_number",
+                            title: "Call Customer Service",
+                            payload: "+16505551234"
+                        }]
                     }
                 }
             }
-        }
+        };
         callSendAPI(messageData);
     }
 
