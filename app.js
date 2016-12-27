@@ -349,6 +349,7 @@ function receivedPostback(event) {
                 sendTextMessage(senderID, "Postback called");
         }
     }
+}
 
     /*
      * Message Read Event
