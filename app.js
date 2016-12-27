@@ -330,7 +330,7 @@ function receivedPostback(event) {
         // the text we received.
         switch (payload) {
             case 'Get Live Help':
-                sendGetLiveHelpMessage(sender,"test get");
+                sendGetLiveHelpMessage(sender);
                 break;
 
             case 'Got it':
@@ -385,7 +385,7 @@ function receivedPostback(event) {
           "and auth code %s ", senderID, status, authCode);
     }
 
-    function sendGetLiveHelpMessage(recipientId, messageText) {
+    function sendGetLiveHelpMessage(recipientId) {
         var messageData = {
             recipient: {
                 id: recipientId
@@ -397,7 +397,7 @@ function receivedPostback(event) {
                         template_type: "generic",
                         elements: [
                            {
-                               text: messageText + "No problem! Would you rather talk here through messenger or chat with someone over the phone?'",
+                               text: "No problem! Would you rather talk here through messenger or chat with someone over the phone?'",
                                buttons: [
                                  {
                                      type: "postback",
@@ -463,7 +463,7 @@ function receivedPostback(event) {
                 id: recipientId
             },
             message: {
-                text: messageText,
+                text: messageText + "dd",
                 metadata: "DEVELOPER_DEFINED_METADATA"
             }
         };
