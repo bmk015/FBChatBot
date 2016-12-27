@@ -251,6 +251,9 @@ function receivedMessage(event) {
     // keywords and send back the corresponding example. Otherwise, just echo
     // the text we received.
     switch (messageText) {
+    case 'help':
+	 sendHelpMessage(senderID);
+	 break;
       case 'image':
         sendImageMessage(senderID);
         break;
@@ -560,6 +563,41 @@ function sendButtonMessage(recipientId) {
         }
       }
     }
+  };  
+
+  callSendAPI(messageData);
+}
+
+  function sendHelpMessage(recipientId) {
+  var messageData = {
+    recipient: {
+      id: recipientId
+    },
+  message:{
+    attachment:{
+      type:"template",
+      payload:{
+        template_type:"generic",
+        elements:[
+           {
+            title:"Hi, I'm the Allstate Insurbot and I'm here to help",
+            subtitle:"To get started, simply select one of the menu options below or type a question or phrase.If you need any assistance at any time,just type "help"",
+            buttons:[
+              {
+                type:"postback",
+                title:"Got it",
+				payload:"GOT_IT"
+              },{
+                type:"postback",
+                title:"Get Live Help",
+                payload:"GET_LIVE_HELP"
+              }              
+            ]      
+          }
+        ]
+      }
+    }
+  }
   };  
 
   callSendAPI(messageData);
