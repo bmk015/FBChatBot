@@ -6,12 +6,12 @@
 /* jshint node: true, devel: true */
 'use strict';
 
-const 
+const
   bodyParser = require('body-parser'),
   config = require('config'),
   crypto = require('crypto'),
   express = require('express'),
-  https = require('https'),  
+  https = require('https'),
   request = require('request');
 
 var app = express();
@@ -27,7 +27,7 @@ app.use(express.static('public'));
  */
 
 // App Secret can be retrieved from the App Dashboard
-const APP_SECRET = (process.env.MESSENGER_APP_SECRET) ? 
+const APP_SECRET = (process.env.MESSENGER_APP_SECRET) ?
   process.env.MESSENGER_APP_SECRET :
   config.get('appSecret');
 
@@ -48,8 +48,8 @@ const SERVER_URL = (process.env.SERVER_URL) ?
   config.get('serverURL');
 
 if (!(APP_SECRET && VALIDATION_TOKEN && PAGE_ACCESS_TOKEN && SERVER_URL)) {
-  console.error("Missing config values");
-  process.exit(1);
+    console.error("Missing config values");
+    process.exit(1);
 }
 
 /*
@@ -57,15 +57,15 @@ if (!(APP_SECRET && VALIDATION_TOKEN && PAGE_ACCESS_TOKEN && SERVER_URL)) {
  * setup is the same token used here.
  *
  */
-app.get('/webhook', function(req, res) {
-  if (req.query['hub.mode'] === 'subscribe' &&
-      req.query['hub.verify_token'] === VALIDATION_TOKEN) {
-    console.log("Validating webhook");
-    res.status(200).send(req.query['hub.challenge']);
-  } else {
-    console.error("Failed validation. Make sure the validation tokens match.");
-    res.sendStatus(403);          
-  }  
+app.get('/webhook', function (req, res) {
+    if (req.query['hub.mode'] === 'subscribe' &&
+        req.query['hub.verify_token'] === VALIDATION_TOKEN) {
+        console.log("Validating webhook");
+        res.status(200).send(req.query['hub.challenge']);
+    } else {
+        console.error("Failed validation. Make sure the validation tokens match.");
+        res.sendStatus(403);
+    }
 });
 
 
@@ -77,42 +77,42 @@ app.get('/webhook', function(req, res) {
  *
  */
 app.post('/webhook', function (req, res) {
-  var data = req.body;
+    var data = req.body;
 
-  // Make sure this is a page subscription
-  if (data.object == 'page') {
-    // Iterate over each entry
-    // There may be multiple if batched
-   data.entry.forEach(function(pageEntry) {
-      var pageID = pageEntry.id;
-      var timeOfEvent = pageEntry.time;
+    // Make sure this is a page subscription
+    if (data.object == 'page') {
+        // Iterate over each entry
+        // There may be multiple if batched
+        data.entry.forEach(function (pageEntry) {
+            var pageID = pageEntry.id;
+            var timeOfEvent = pageEntry.time;
 
-      // Iterate over each messaging event
-      pageEntry.messaging.forEach(function(messagingEvent) {
-        if (messagingEvent.optin) {
-          receivedAuthentication(messagingEvent);
-        } else if (messagingEvent.message) {
-          receivedMessage(messagingEvent);
-        } else if (messagingEvent.delivery) {
-          receivedDeliveryConfirmation(messagingEvent);
-        } else if (messagingEvent.postback) {
-          receivedPostback(messagingEvent);
-        } else if (messagingEvent.read) {
-          receivedMessageRead(messagingEvent);
-        } else if (messagingEvent.account_linking) {
-          receivedAccountLink(messagingEvent);
-        } else {
-          console.log("Webhook received unknown messagingEvent: ", messagingEvent);
-        }
-      });
-    }); 
+            // Iterate over each messaging event
+            pageEntry.messaging.forEach(function (messagingEvent) {
+                if (messagingEvent.optin) {
+                    receivedAuthentication(messagingEvent);
+                } else if (messagingEvent.message) {
+                    receivedMessage(messagingEvent);
+                } else if (messagingEvent.delivery) {
+                    receivedDeliveryConfirmation(messagingEvent);
+                } else if (messagingEvent.postback) {
+                    receivedPostback(messagingEvent);
+                } else if (messagingEvent.read) {
+                    receivedMessageRead(messagingEvent);
+                } else if (messagingEvent.account_linking) {
+                    receivedAccountLink(messagingEvent);
+                } else {
+                    console.log("Webhook received unknown messagingEvent: ", messagingEvent);
+                }
+            });
+        });
 
-    // Assume all went well.
-    //
-    // You must send back a 200, within 20 seconds, to let us know you've 
-    // successfully received the callback. Otherwise, the request will time out.
-    res.sendStatus(200);
-  }
+        // Assume all went well.
+        //
+        // You must send back a 200, within 20 seconds, to let us know you've 
+        // successfully received the callback. Otherwise, the request will time out.
+        res.sendStatus(200);
+    }
 });
 
 /*
@@ -120,22 +120,22 @@ app.post('/webhook', function (req, res) {
  * (sendAccountLinking) is pointed to this URL. 
  * 
  */
-app.get('/authorize', function(req, res) {
-  var accountLinkingToken = req.query.account_linking_token;
-  var redirectURI = req.query.redirect_uri;
+app.get('/authorize', function (req, res) {
+    var accountLinkingToken = req.query.account_linking_token;
+    var redirectURI = req.query.redirect_uri;
 
-  // Authorization Code should be generated per user by the developer. This will 
-  // be passed to the Account Linking callback.
-  var authCode = "1234567890";
+    // Authorization Code should be generated per user by the developer. This will 
+    // be passed to the Account Linking callback.
+    var authCode = "1234567890";
 
-  // Redirect users to this URI on successful login
-  var redirectURISuccess = redirectURI + "&authorization_code=" + authCode;
+    // Redirect users to this URI on successful login
+    var redirectURISuccess = redirectURI + "&authorization_code=" + authCode;
 
-  res.render('authorize', {
-    accountLinkingToken: accountLinkingToken,
-    redirectURI: redirectURI,
-    redirectURISuccess: redirectURISuccess
-  });
+    res.render('authorize', {
+        accountLinkingToken: accountLinkingToken,
+        redirectURI: redirectURI,
+        redirectURISuccess: redirectURISuccess
+    });
 });
 
 /*
@@ -147,25 +147,25 @@ app.get('/authorize', function(req, res) {
  *
  */
 function verifyRequestSignature(req, res, buf) {
-  var signature = req.headers["x-hub-signature"];
+    var signature = req.headers["x-hub-signature"];
 
-  if (!signature) {
-    // For testing, let's log an error. In production, you should throw an 
-    // error.
-    console.error("Couldn't validate the signature.");
-  } else {
-    var elements = signature.split('=');
-    var method = elements[0];
-    var signatureHash = elements[1];
+    if (!signature) {
+        // For testing, let's log an error. In production, you should throw an 
+        // error.
+        console.error("Couldn't validate the signature.");
+    } else {
+        var elements = signature.split('=');
+        var method = elements[0];
+        var signatureHash = elements[1];
 
-    var expectedHash = crypto.createHmac('sha1', APP_SECRET)
-                        .update(buf)
-                        .digest('hex');
+        var expectedHash = crypto.createHmac('sha1', APP_SECRET)
+                            .update(buf)
+                            .digest('hex');
 
-    if (signatureHash != expectedHash) {
-      throw new Error("Couldn't validate the request signature.");
+        if (signatureHash != expectedHash) {
+            throw new Error("Couldn't validate the request signature.");
+        }
     }
-  }
 }
 
 /*
@@ -177,24 +177,24 @@ function verifyRequestSignature(req, res, buf) {
  *
  */
 function receivedAuthentication(event) {
-  var senderID = event.sender.id;
-  var recipientID = event.recipient.id;
-  var timeOfAuth = event.timestamp;
+    var senderID = event.sender.id;
+    var recipientID = event.recipient.id;
+    var timeOfAuth = event.timestamp;
 
-  // The 'ref' field is set in the 'Send to Messenger' plugin, in the 'data-ref'
-  // The developer can set this to an arbitrary value to associate the 
-  // authentication callback with the 'Send to Messenger' click event. This is
-  // a way to do account linking when the user clicks the 'Send to Messenger' 
-  // plugin.
-  var passThroughParam = event.optin.ref;
+    // The 'ref' field is set in the 'Send to Messenger' plugin, in the 'data-ref'
+    // The developer can set this to an arbitrary value to associate the 
+    // authentication callback with the 'Send to Messenger' click event. This is
+    // a way to do account linking when the user clicks the 'Send to Messenger' 
+    // plugin.
+    var passThroughParam = event.optin.ref;
 
-  console.log("Received authentication for user %d and page %d with pass " +
-    "through param '%s' at %d", senderID, recipientID, passThroughParam, 
-    timeOfAuth);
+    console.log("Received authentication for user %d and page %d with pass " +
+      "through param '%s' at %d", senderID, recipientID, passThroughParam,
+      timeOfAuth);
 
-  // When an authentication is received, we'll send a message back to the sender
-  // to let them know it was successful.
-  sendTextMessage(senderID, "Authentication successful");
+    // When an authentication is received, we'll send a message back to the sender
+    // to let them know it was successful.
+    sendTextMessage(senderID, "Authentication successful");
 }
 
 /*
@@ -212,67 +212,67 @@ function receivedAuthentication(event) {
  * 
  */
 function receivedMessage(event) {
-  var senderID = event.sender.id;
-  var recipientID = event.recipient.id;
-  var timeOfMessage = event.timestamp;
-  var message = event.message;
+    var senderID = event.sender.id;
+    var recipientID = event.recipient.id;
+    var timeOfMessage = event.timestamp;
+    var message = event.message;
 
-  console.log("Received message for user %d and page %d at %d with message:", 
-    senderID, recipientID, timeOfMessage);
-  console.log(JSON.stringify(message));
+    console.log("Received message for user %d and page %d at %d with message:",
+      senderID, recipientID, timeOfMessage);
+    console.log(JSON.stringify(message));
 
-  var isEcho = message.is_echo;
-  var messageId = message.mid;
-  var appId = message.app_id;
-  var metadata = message.metadata;
+    var isEcho = message.is_echo;
+    var messageId = message.mid;
+    var appId = message.app_id;
+    var metadata = message.metadata;
 
-  // You may get a text or attachment but not both
-  var messageText = message.text;
-  var messageAttachments = message.attachments;
-  var quickReply = message.quick_reply;
+    // You may get a text or attachment but not both
+    var messageText = message.text;
+    var messageAttachments = message.attachments;
+    var quickReply = message.quick_reply;
 
-  if (isEcho) {
-    // Just logging message echoes to console
-    console.log("Received echo for message %s and app %d with metadata %s", 
-      messageId, appId, metadata);
-    return;
-  } else if (quickReply) {
-    var quickReplyPayload = quickReply.payload;
-    console.log("Quick reply for message %s with payload %s",
-      messageId, quickReplyPayload);
+    if (isEcho) {
+        // Just logging message echoes to console
+        console.log("Received echo for message %s and app %d with metadata %s",
+          messageId, appId, metadata);
+        return;
+    } else if (quickReply) {
+        var quickReplyPayload = quickReply.payload;
+        console.log("Quick reply for message %s with payload %s",
+          messageId, quickReplyPayload);
 
-    sendTextMessage(senderID, "Quick reply tapped");
-    return;
-  }
-
-  if (messageText) {
-
-    // If we receive a text message, check to see if it matches any special
-    // keywords and send back the corresponding example. Otherwise, just echo
-    // the text we received.
-    switch (messageText) {
-      case 'help':
-	   sendHelpMessage(senderID);
-	   break;
-	   
-       case 'customer support':
-        sendCustomerSupportMessage(senderID);
-        break;
-
-      case 'generic':
-        sendGenericMessage(senderID);
-        break;
-
-      case 'account linking':
-        sendAccountLinking(senderID);
-        break;
-
-      default:
-        sendTextMessage(senderID, messageText);
+        sendTextMessage(senderID, "Quick reply tapped");
+        return;
     }
-  } else if (messageAttachments) {
-    sendTextMessage(senderID, "Message with attachment received");
-  }
+
+    if (messageText) {
+
+        // If we receive a text message, check to see if it matches any special
+        // keywords and send back the corresponding example. Otherwise, just echo
+        // the text we received.
+        switch (messageText) {
+            case 'help':
+                sendHelpMessage(senderID);
+                break;
+
+            case 'customer support':
+                sendCustomerSupportMessage(senderID);
+                break;
+
+            case 'generic':
+                sendGenericMessage(senderID);
+                break;
+
+            case 'account linking':
+                sendAccountLinking(senderID);
+                break;
+
+            default:
+                sendTextMessage(senderID, messageText);
+        }
+    } else if (messageAttachments) {
+        sendTextMessage(senderID, "Message with attachment received");
+    }
 }
 
 
@@ -284,21 +284,21 @@ function receivedMessage(event) {
  *
  */
 function receivedDeliveryConfirmation(event) {
-  var senderID = event.sender.id;
-  var recipientID = event.recipient.id;
-  var delivery = event.delivery;
-  var messageIDs = delivery.mids;
-  var watermark = delivery.watermark;
-  var sequenceNumber = delivery.seq;
+    var senderID = event.sender.id;
+    var recipientID = event.recipient.id;
+    var delivery = event.delivery;
+    var messageIDs = delivery.mids;
+    var watermark = delivery.watermark;
+    var sequenceNumber = delivery.seq;
 
-  if (messageIDs) {
-    messageIDs.forEach(function(messageID) {
-      console.log("Received delivery confirmation for message ID: %s", 
-        messageID);
-    });
-  }
+    if (messageIDs) {
+        messageIDs.forEach(function (messageID) {
+            console.log("Received delivery confirmation for message ID: %s",
+              messageID);
+        });
+    }
 
-  console.log("All message before %d were delivered.", watermark);
+    console.log("All message before %d were delivered.", watermark);
 }
 
 
@@ -310,100 +310,100 @@ function receivedDeliveryConfirmation(event) {
  * 
  */
 function receivedPostback(event) {
-  var senderID = event.sender.id;
-  var recipientID = event.recipient.id;
-  var timeOfPostback = event.timestamp;
+    var senderID = event.sender.id;
+    var recipientID = event.recipient.id;
+    var timeOfPostback = event.timestamp;
 
-  // The 'payload' param is a developer-defined field which is set in a postback 
-  // button for Structured Messages. 
-  var payload = event.postback.payload;
- 
-  console.log("Received postback for user %d and page %d with payload '%s' " + 
-    "at %d", senderID, recipientID, payload, timeOfPostback);
+    // The 'payload' param is a developer-defined field which is set in a postback 
+    // button for Structured Messages. 
+    var payload = event.postback.payload;
 
-  // When a postback is called, we'll send a message back to the sender to 
-  // let them know it was successful
-	if(payload == 'GET_START'){
-	GetStarted(senderID);
-	}
-	else if(payload == 'GET_LIVE_HELP'){
-		sendGetLiveHelpMessage(sender);
-	}
-	else if(payload == 'GOT_IT'){
-		sendGotItMessage(sender);
-	}
-	else if(payload == 'AGENT_FINDER'){
-		sendAgentFinderMessage(sender);
-	}
-	else{  
-		sendTextMessage(senderID, "Postback called");
-	}
+    console.log("Received postback for user %d and page %d with payload '%s' " +
+      "at %d", senderID, recipientID, payload, timeOfPostback);
+
+    // When a postback is called, we'll send a message back to the sender to 
+    // let them know it was successful
+    if (payload == 'GET_START') {
+        GetStarted(senderID);
+    }
+    else if (payload == 'GET_LIVE_HELP') {
+        sendGetLiveHelpMessage(sender);
+    }
+    else if (payload == 'GOT_IT') {
+        sendGotItMessage(sender);
+    }
+    else if (payload == 'AGENT_FINDER') {
+        sendAgentFinderMessage(sender);
+    }
+    else {
+        sendTextMessage(senderID, "Postback called");
+    }
 }
 
 function sendGetLiveHelpMessage(recipientId) {
-  var messageData = {
-    recipient: {
-      id: recipientId
-    },
-  message:{
-    attachment:{
-      type:"template",
-      payload:{
-        template_type:"generic",
-        elements:[
-           {
-            text:"No problem! Would you rather talk here through messenger or chat with someone over the phone?'",
-            buttons:[
-              {
-                type:"postback",
-                title:"Use Messenger",
-				payload:"USE_MESSENGER"
-              },{
-                type: "phone_number",,
-                title:"Call Customer Service",
-                payload: "+16505551234"
-              }              
-            ]      
-          }
-        ]
-      }
-    }
-  }
-  };  
+    var messageData = {
+        recipient: {
+            id: recipientId
+        },
+        message: {
+            attachment: {
+                type: "template",
+                payload: {
+                    template_type: "generic",
+                    elements: [
+                       {
+                           text: "No problem! Would you rather talk here through messenger or chat with someone over the phone?'",
+                           buttons: [
+                             {
+                                 type: "postback",
+                                 title: "Use Messenger",
+                                 payload: "USE_MESSENGER"
+                             }, {
+                                 type: "phone_number",
+                                 title: "Call Customer Service",
+                                 payload: "+16505551234"
+                             }
+                           ]
+                       }
+                    ]
+                }
+            }
+        }
+    };
 
-  callSendAPI(messageData);
+    callSendAPI(messageData);
 }
 
 function sendAgentFinderMessage(recipientId) {
-  var messageData = {
-    recipient: {
-      id: recipientId
-    },
-  message:{
-    attachment:{
-      type:"template",
-      payload:{
-        template_type:"generic",
-        elements:[
-           {
-            title: "Lets get started",
-            subtitle: "Select one of the options below or type a message to begin",
-            image_url: SERVER_URL   + "/assets/wallpaper.jpg",
-            buttons:[
-              {
-                type:"postback",
-                title:"Agent Finder",
-				payload:"AGENT_FINDER"
-              }              
-            ]      
-          }
-        ]
-      }
-    }
-  }
-  };  
+    var messageData = {
+        recipient: {
+            id: recipientId
+        },
+        message: {
+            attachment: {
+                type: "template",
+                payload: {
+                    template_type: "generic",
+                    elements: [
+                       {
+                           title: "Lets get started",
+                           subtitle: "Select one of the options below or type a message to begin",
+                           image_url: SERVER_URL + "/assets/wallpaper.jpg",
+                           buttons: [
+                             {
+                                 type: "postback",
+                                 title: "Agent Finder",
+                                 payload: "AGENT_FINDER"
+                             }
+                           ]
+                       }
+                    ]
+                }
+            }
+        }
+    };
 
-  callSendAPI(messageData);
+    callSendAPI(messageData);
 }
 
 /*
@@ -414,15 +414,15 @@ function sendAgentFinderMessage(recipientId) {
  * 
  */
 function receivedMessageRead(event) {
-  var senderID = event.sender.id;
-  var recipientID = event.recipient.id;
+    var senderID = event.sender.id;
+    var recipientID = event.recipient.id;
 
-  // All messages before watermark (a timestamp) or sequence have been seen.
-  var watermark = event.read.watermark;
-  var sequenceNumber = event.read.seq;
+    // All messages before watermark (a timestamp) or sequence have been seen.
+    var watermark = event.read.watermark;
+    var sequenceNumber = event.read.seq;
 
-  console.log("Received message read event for watermark %d and sequence " +
-    "number %d", watermark, sequenceNumber);
+    console.log("Received message read event for watermark %d and sequence " +
+      "number %d", watermark, sequenceNumber);
 }
 
 /*
@@ -434,14 +434,14 @@ function receivedMessageRead(event) {
  * 
  */
 function receivedAccountLink(event) {
-  var senderID = event.sender.id;
-  var recipientID = event.recipient.id;
+    var senderID = event.sender.id;
+    var recipientID = event.recipient.id;
 
-  var status = event.account_linking.status;
-  var authCode = event.account_linking.authorization_code;
+    var status = event.account_linking.status;
+    var authCode = event.account_linking.authorization_code;
 
-  console.log("Received account link event with for user %d with status %s " +
-    "and auth code %s ", senderID, status, authCode);
+    console.log("Received account link event with for user %d with status %s " +
+      "and auth code %s ", senderID, status, authCode);
 }
 
 
@@ -450,17 +450,17 @@ function receivedAccountLink(event) {
  *
  */
 function sendTextMessage(recipientId, messageText) {
-  var messageData = {
-    recipient: {
-      id: recipientId
-    },
-    message: {
-      text: messageText,
-      metadata: "DEVELOPER_DEFINED_METADATA"
-    }
-  };
+    var messageData = {
+        recipient: {
+            id: recipientId
+        },
+        message: {
+            text: messageText,
+            metadata: "DEVELOPER_DEFINED_METADATA"
+        }
+    };
 
-  callSendAPI(messageData);
+    callSendAPI(messageData);
 }
 
 /*
@@ -468,66 +468,66 @@ function sendTextMessage(recipientId, messageText) {
  *
  */
 function sendCustomerSupportMessage(recipientId) {
-  var messageData = {
-    recipient: {
-      id: recipientId
-    },
-    message: {
-      attachment: {
-        type: "template",
-        payload: {
-          template_type: "button",
-          text: "Allstate Insurance Company",
-          buttons:[{
-            type: "web_url",
-            url: "https://www.allstate.com/",
-            title: "Open Web URL"
-          }, {
-            type: "phone_number",
-            title: "Call Phone Number",
-            payload: "+16505551234"
-          }]
+    var messageData = {
+        recipient: {
+            id: recipientId
+        },
+        message: {
+            attachment: {
+                type: "template",
+                payload: {
+                    template_type: "button",
+                    text: "Allstate Insurance Company",
+                    buttons: [{
+                        type: "web_url",
+                        url: "https://www.allstate.com/",
+                        title: "Open Web URL"
+                    }, {
+                        type: "phone_number",
+                        title: "Call Phone Number",
+                        payload: "+16505551234"
+                    }]
+                }
+            }
         }
-      }
-    }
-  };  
+    };
 
-  callSendAPI(messageData);
+    callSendAPI(messageData);
 }
 
 function sendHelpMessage(recipientId) {
-  var messageData = {
-    recipient: {
-      id: recipientId
-    },
-  message:{
-    attachment:{
-      type:"template",
-      payload:{
-        template_type:"generic",
-        elements:[
-           {
-            title:"Hi, I'm the Allstate Insurbot and I'm here to help",
-            text:"To get started, simply select one of the menu options below or type a question or phrase.If you need any assistance at any time,just type 'help'",
-            buttons:[
-              {
-                type:"postback",
-                title:"Got it",
-				payload:"GOT_IT"
-              },{
-                type:"postback",
-                title:"Get Live Help",
-                payload:"GET_LIVE_HELP"
-              }              
-            ]      
-          }
-        ]
-      }
-    }
-  }
-  };  
+    var messageData = {
+        recipient: {
+            id: recipientId
+        },
+        message: {
+            attachment: {
+                type: "template",
+                payload: {
+                    template_type: "generic",
+                    elements: [
+                       {
+                           title: "Hi, I'm the Allstate Insurbot and I'm here to help",
+                           text: "To get started, simply select one of the menu options below or type a question or phrase.If you need any assistance at any time,just type 'help'",
+                           buttons: [
+                             {
+                                 type: "postback",
+                                 title: "Got it",
+                                 payload: "GOT_IT"
+                             }, {
+                                 type: "postback",
+                                 title: "Get Live Help",
+                                 payload: "GET_LIVE_HELP"
+                             }
+                           ]
+                       }
+                    ]
+                }
+            }
+        }
+    };
 
-  callSendAPI(messageData);
+    callSendAPI(messageData);
 }
 
 /*
@@ -535,50 +535,50 @@ function sendHelpMessage(recipientId) {
  *
  */
 function sendGenericMessage(recipientId) {
-  var messageData = {
-    recipient: {
-      id: recipientId
-    },
-    message: {
-      attachment: {
-        type: "template",
-        payload: {
-          template_type: "generic",
-          elements: [{
-            title: "Allstate",
-            subtitle: "Allstate Insurance Company",
-            item_url: "https://www.allstate.com/",               
-            image_url: SERVER_URL   + "/assets/wallpaper.jpg",
-            buttons: [{
-              type: "web_url",
-              url: "https://www.allstate.com/",
-              title: "Open Web URL"
-            }, {
-              type: "postback",
-              title: "Call Postback",
-              payload: "Payload for first bubble",
-            }],
-          }, {
-            title: "Auto",
-            subtitle: "Get Auto Insurance",
-            item_url: "https://www.allstate.com/auto-insurance.aspx",               
-            image_url: SERVER_URL   + "/assets/wallpaper.jpg",
-            buttons: [{
-              type: "web_url",
-              url: "https://www.allstate.com/auto-insurance.aspx",
-              title: "Open Web URL"
-            }, {
-              type: "postback",
-              title: "Call Postback",
-              payload: "Payload for second bubble",
-            }]
-          }]
+    var messageData = {
+        recipient: {
+            id: recipientId
+        },
+        message: {
+            attachment: {
+                type: "template",
+                payload: {
+                    template_type: "generic",
+                    elements: [{
+                        title: "Allstate",
+                        subtitle: "Allstate Insurance Company",
+                        item_url: "https://www.allstate.com/",
+                        image_url: SERVER_URL + "/assets/wallpaper.jpg",
+                        buttons: [{
+                            type: "web_url",
+                            url: "https://www.allstate.com/",
+                            title: "Open Web URL"
+                        }, {
+                            type: "postback",
+                            title: "Call Postback",
+                            payload: "Payload for first bubble",
+                        }],
+                    }, {
+                        title: "Auto",
+                        subtitle: "Get Auto Insurance",
+                        item_url: "https://www.allstate.com/auto-insurance.aspx",
+                        image_url: SERVER_URL + "/assets/wallpaper.jpg",
+                        buttons: [{
+                            type: "web_url",
+                            url: "https://www.allstate.com/auto-insurance.aspx",
+                            title: "Open Web URL"
+                        }, {
+                            type: "postback",
+                            title: "Call Postback",
+                            payload: "Payload for second bubble",
+                        }]
+                    }]
+                }
+            }
         }
-      }
-    }
-  };  
+    };
 
-  callSendAPI(messageData);
+    callSendAPI(messageData);
 }
 
 /*
@@ -586,26 +586,26 @@ function sendGenericMessage(recipientId) {
  *
  */
 function sendAccountLinking(recipientId) {
-  var messageData = {
-    recipient: {
-      id: recipientId
-    },
-    message: {
-      attachment: {
-        type: "template",
-        payload: {
-          template_type: "button",
-          text: "Welcome. Link your account.",
-          buttons:[{
-            type: "account_link",
-            url: SERVER_URL + "/authorize"
-          }]
+    var messageData = {
+        recipient: {
+            id: recipientId
+        },
+        message: {
+            attachment: {
+                type: "template",
+                payload: {
+                    template_type: "button",
+                    text: "Welcome. Link your account.",
+                    buttons: [{
+                        type: "account_link",
+                        url: SERVER_URL + "/authorize"
+                    }]
+                }
+            }
         }
-      }
-    }
-  };  
+    };
 
-  callSendAPI(messageData);
+    callSendAPI(messageData);
 }
 
 /*
@@ -614,35 +614,35 @@ function sendAccountLinking(recipientId) {
  *
  */
 function callSendAPI(messageData) {
-  request({
-    uri: 'https://graph.facebook.com/v2.6/me/messages',
-    qs: { access_token: PAGE_ACCESS_TOKEN },
-    method: 'POST',
-    json: messageData
+    request({
+        uri: 'https://graph.facebook.com/v2.6/me/messages',
+        qs: { access_token: PAGE_ACCESS_TOKEN },
+        method: 'POST',
+        json: messageData
 
-  }, function (error, response, body) {
-    if (!error && response.statusCode == 200) {
-      var recipientId = body.recipient_id;
-      var messageId = body.message_id;
+    }, function (error, response, body) {
+        if (!error && response.statusCode == 200) {
+            var recipientId = body.recipient_id;
+            var messageId = body.message_id;
 
-      if (messageId) {
-        console.log("Successfully sent message with id %s to recipient %s", 
-          messageId, recipientId);
-      } else {
-      console.log("Successfully called Send API for recipient %s", 
-        recipientId);
-      }
-    } else {
-      console.error("Failed calling Send API", response.statusCode, response.statusMessage, body.error);
-    }
-  });  
+            if (messageId) {
+                console.log("Successfully sent message with id %s to recipient %s",
+                  messageId, recipientId);
+            } else {
+                console.log("Successfully called Send API for recipient %s",
+                  recipientId);
+            }
+        } else {
+            console.error("Failed calling Send API", response.statusCode, response.statusMessage, body.error);
+        }
+    });
 }
 
 // Start server
 // Webhooks must be available via SSL with a certificate signed by a valid 
 // certificate authority.
-app.listen(app.get('port'), function() {
-  console.log('Node app is running on port', app.get('port'));
+app.listen(app.get('port'), function () {
+    console.log('Node app is running on port', app.get('port'));
 });
 
 module.exports = app;
