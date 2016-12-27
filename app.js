@@ -508,7 +508,7 @@ function sendHelpMessage(recipientId) {
                     elements: [
                        {
                            title: "Hi, I'm the Allstate Insurbot and I'm here to help",
-                           text: "To get started, simply select one of the menu options below or type a question or phrase.If you need any assistance at any time,just type 'help'",
+                           subtitle: "To get started, simply select one of the menu options below or type a question or phrase.If you need any assistance at any time,just type 'help'",
                            buttons: [
                              {
                                  type: "postback",
