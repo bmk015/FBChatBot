@@ -323,327 +323,337 @@ function receivedPostback(event) {
 
     // When a postback is called, we'll send a message back to the sender to 
     // let them know it was successful
-    if (payload == 'GET_START') {
-        GetStarted(senderID);
-    }
-    else if (payload == 'GET_LIVE_HELP') {
-        sendGetLiveHelpMessage(sender);
-    }
-    else if (payload == 'GOT_IT') {
-        sendGotItMessage(sender);
-    }
-    else if (payload == 'AGENT_FINDER') {
-        sendAgentFinderMessage(sender);
-    }
-    else {
-        sendTextMessage(senderID, "Postback called");
-    }
-}
+    if (payload) {
 
-function sendGetLiveHelpMessage(recipientId) {
-    var messageData = {
-        recipient: {
-            id: recipientId
-        },
-        message: {
-            attachment: {
-                type: "template",
-                payload: {
-                    template_type: "generic",
-                    elements: [
-                       {
-                           text: "No problem! Would you rather talk here through messenger or chat with someone over the phone?'",
-                           buttons: [
-                             {
-                                 type: "postback",
-                                 title: "Use Messenger",
-                                 payload: "USE_MESSENGER"
-                             }, {
-                                 type: "phone_number",
-                                 title: "Call Customer Service",
-                                 payload: "+16505551234"
-                             }
-                           ]
-                       }
-                    ]
+        // If we receive a text message, check to see if it matches any special
+        // keywords and send back the corresponding example. Otherwise, just echo
+        // the text we received.
+        switch (payload) {
+            case 'GET_START':
+                GetStarted(senderID);
+                break;
+
+            case 'GET_LIVE_HELP':
+                sendGetLiveHelpMessage(sender);
+                break;
+
+            case 'GOT_IT':
+                sendGotItMessage(sender);
+                break;
+
+            case 'AGENT_FINDER':
+                sendAgentFinderMessage(sender);
+                break;
+
+            default:
+                sendTextMessage(senderID, "Postback called");
+        }
+    }
+
+    /*
+     * Message Read Event
+     *
+     * This event is called when a previously-sent message has been read.
+     * https://developers.facebook.com/docs/messenger-platform/webhook-reference/message-read
+     * 
+     */
+    function receivedMessageRead(event) {
+        var senderID = event.sender.id;
+        var recipientID = event.recipient.id;
+
+        // All messages before watermark (a timestamp) or sequence have been seen.
+        var watermark = event.read.watermark;
+        var sequenceNumber = event.read.seq;
+
+        console.log("Received message read event for watermark %d and sequence " +
+          "number %d", watermark, sequenceNumber);
+    }
+
+    /*
+     * Account Link Event
+     *
+     * This event is called when the Link Account or UnLink Account action has been
+     * tapped.
+     * https://developers.facebook.com/docs/messenger-platform/webhook-reference/account-linking
+     * 
+     */
+    function receivedAccountLink(event) {
+        var senderID = event.sender.id;
+        var recipientID = event.recipient.id;
+
+        var status = event.account_linking.status;
+        var authCode = event.account_linking.authorization_code;
+
+        console.log("Received account link event with for user %d with status %s " +
+          "and auth code %s ", senderID, status, authCode);
+    }
+
+    function sendGetLiveHelpMessage(recipientId) {
+        var messageData = {
+            recipient: {
+                id: recipientId
+            },
+            message: {
+                attachment: {
+                    type: "template",
+                    payload: {
+                        template_type: "generic",
+                        elements: [
+                           {
+                               text: "No problem! Would you rather talk here through messenger or chat with someone over the phone?'",
+                               buttons: [
+                                 {
+                                     type: "postback",
+                                     title: "Use Messenger",
+                                     payload: "USE_MESSENGER"
+                                 }, {
+                                     type: "phone_number",
+                                     title: "Call Customer Service",
+                                     payload: "+16505551234"
+                                 }
+                               ]
+                           }
+                        ]
+                    }
                 }
             }
-        }
-    };
+        };
 
-    callSendAPI(messageData);
-}
+        callSendAPI(messageData);
+    }
 
-function sendAgentFinderMessage(recipientId) {
-    var messageData = {
-        recipient: {
-            id: recipientId
-        },
-        message: {
-            attachment: {
-                type: "template",
-                payload: {
-                    template_type: "generic",
-                    elements: [
-                       {
-                           title: "Lets get started",
-                           subtitle: "Select one of the options below or type a message to begin",
-                           image_url: SERVER_URL + "/assets/wallpaper.jpg",
-                           buttons: [
-                             {
-                                 type: "postback",
-                                 title: "Agent Finder",
-                                 payload: "AGENT_FINDER"
-                             }
-                           ]
-                       }
-                    ]
+
+    function sendAgentFinderMessage(recipientId) {
+        var messageData = {
+            recipient: {
+                id: recipientId
+            },
+            message: {
+                attachment: {
+                    type: "template",
+                    payload: {
+                        template_type: "generic",
+                        elements: [
+                           {
+                               title: "Lets get started",
+                               subtitle: "Select one of the options below or type a message to begin",
+                               image_url: SERVER_URL + "/assets/wallpaper.jpg",
+                               buttons: [
+                                 {
+                                     type: "postback",
+                                     title: "Agent Finder",
+                                     payload: "AGENT_FINDER"
+                                 }
+                               ]
+                           }
+                        ]
+                    }
                 }
             }
-        }
-    };
+        };
 
-    callSendAPI(messageData);
-}
-
-/*
- * Message Read Event
- *
- * This event is called when a previously-sent message has been read.
- * https://developers.facebook.com/docs/messenger-platform/webhook-reference/message-read
- * 
- */
-function receivedMessageRead(event) {
-    var senderID = event.sender.id;
-    var recipientID = event.recipient.id;
-
-    // All messages before watermark (a timestamp) or sequence have been seen.
-    var watermark = event.read.watermark;
-    var sequenceNumber = event.read.seq;
-
-    console.log("Received message read event for watermark %d and sequence " +
-      "number %d", watermark, sequenceNumber);
-}
-
-/*
- * Account Link Event
- *
- * This event is called when the Link Account or UnLink Account action has been
- * tapped.
- * https://developers.facebook.com/docs/messenger-platform/webhook-reference/account-linking
- * 
- */
-function receivedAccountLink(event) {
-    var senderID = event.sender.id;
-    var recipientID = event.recipient.id;
-
-    var status = event.account_linking.status;
-    var authCode = event.account_linking.authorization_code;
-
-    console.log("Received account link event with for user %d with status %s " +
-      "and auth code %s ", senderID, status, authCode);
-}
+        callSendAPI(messageData);
+    }
 
 
-/*
- * Send a text message using the Send API.
- *
- */
-function sendTextMessage(recipientId, messageText) {
-    var messageData = {
-        recipient: {
-            id: recipientId
-        },
-        message: {
-            text: messageText,
-            metadata: "DEVELOPER_DEFINED_METADATA"
-        }
-    };
-
-    callSendAPI(messageData);
-}
-
-/*
- * Send a button message using the Send API.
- *
- */
-function sendCustomerSupportMessage(recipientId) {
-    var messageData = {
-        recipient: {
-            id: recipientId
-        },
-        message: {
-            attachment: {
-                type: "template",
-                payload: {
-                    template_type: "button",
-                    text: "Allstate Insurance Company",
-                    buttons: [{
-                        type: "web_url",
-                        url: "https://www.allstate.com/",
-                        title: "Open Web URL"
-                    }, {
-                        type: "phone_number",
-                        title: "Call Phone Number",
-                        payload: "+16505551234"
-                    }]
-                }
+    /*
+     * Send a text message using the Send API.
+     *
+     */
+    function sendTextMessage(recipientId, messageText) {
+        var messageData = {
+            recipient: {
+                id: recipientId
+            },
+            message: {
+                text: messageText,
+                metadata: "DEVELOPER_DEFINED_METADATA"
             }
-        }
-    };
+        };
 
-    callSendAPI(messageData);
-}
+        callSendAPI(messageData);
+    }
 
-function sendHelpMessage(recipientId) {
-    var messageData = {
-        recipient: {
-            id: recipientId
-        },
-        message: {
-            attachment: {
-                type: "template",
-                payload: {
-                    template_type: "generic",
-                    elements: [
-                       {
-                           title: "Hi, I'm the Allstate Insurbot and I'm here to help",
-                           subtitle: "To get started, simply select one of the menu options below or type a question or phrase.If you need any assistance at any time,just type 'help'",
-                           buttons: [
-                             {
-                                 type: "postback",
-                                 title: "Got it",
-                                 payload: "GOT_IT"
-                             }, {
-                                 type: "postback",
-                                 title: "Get Live Help",
-                                 payload: "GET_LIVE_HELP"
-                             }
-                           ]
-                       }
-                    ]
-                }
-            }
-        }
-    };
-
-    callSendAPI(messageData);
-}
-
-/*
- * Send a Structured Message (Generic Message type) using the Send API.
- *
- */
-function sendGenericMessage(recipientId) {
-    var messageData = {
-        recipient: {
-            id: recipientId
-        },
-        message: {
-            attachment: {
-                type: "template",
-                payload: {
-                    template_type: "generic",
-                    elements: [{
-                        title: "Allstate",
-                        subtitle: "Allstate Insurance Company",
-                        item_url: "https://www.allstate.com/",
-                        image_url: SERVER_URL + "/assets/wallpaper.jpg",
+    /*
+     * Send a customer support message using the Send API.
+     *
+     */
+    function sendCustomerSupportMessage(recipientId) {
+        var messageData = {
+            recipient: {
+                id: recipientId
+            },
+            message: {
+                attachment: {
+                    type: "template",
+                    payload: {
+                        template_type: "button",
+                        text: "Allstate Insurance Company",
                         buttons: [{
                             type: "web_url",
                             url: "https://www.allstate.com/",
                             title: "Open Web URL"
                         }, {
-                            type: "postback",
-                            title: "Call Postback",
-                            payload: "Payload for first bubble",
-                        }],
-                    }, {
-                        title: "Auto",
-                        subtitle: "Get Auto Insurance",
-                        item_url: "https://www.allstate.com/auto-insurance.aspx",
-                        image_url: SERVER_URL + "/assets/wallpaper.jpg",
-                        buttons: [{
-                            type: "web_url",
-                            url: "https://www.allstate.com/auto-insurance.aspx",
-                            title: "Open Web URL"
-                        }, {
-                            type: "postback",
-                            title: "Call Postback",
-                            payload: "Payload for second bubble",
+                            type: "phone_number",
+                            title: "Call Phone Number",
+                            payload: "+16505551234"
                         }]
-                    }]
+                    }
+                }
+            }
+        };
+
+        callSendAPI(messageData);
+    }
+
+    /*
+     * Send a help message using the Send API.
+     *
+     */
+    function sendHelpMessage(recipientId) {
+        var messageData = {
+            recipient: {
+                id: recipientId
+            },
+            message: {
+                attachment: {
+                    type: "template",
+                    payload: {
+                        template_type: "button",
+                        text: "Hi, I'm the Allstate Insurbot and I'm here to help \nTo get started, simply select one of the menu options below or type a question or phrase.If you need any assistance at any time,just type 'help'",
+                        buttons: [
+                           {
+                               type: "postback",
+                               title: "Got it",
+                               payload: "GOT_IT"
+                           },
+                            {
+                                type: "postback",
+                                title: "Get Live Help",
+                                payload: "GET_LIVE_HELP"
+                            }
+                        ]
+                    }
                 }
             }
         }
-    };
+        callSendAPI(messageData);
+    }
 
-    callSendAPI(messageData);
-}
-
-/*
- * Send a message with the account linking call-to-action
- *
- */
-function sendAccountLinking(recipientId) {
-    var messageData = {
-        recipient: {
-            id: recipientId
-        },
-        message: {
-            attachment: {
-                type: "template",
-                payload: {
-                    template_type: "button",
-                    text: "Welcome. Link your account.",
-                    buttons: [{
-                        type: "account_link",
-                        url: SERVER_URL + "/authorize"
-                    }]
+    /*
+     * Send a Structured Message (Generic Message type) using the Send API.
+     *
+     */
+    function sendGenericMessage(recipientId) {
+        var messageData = {
+            recipient: {
+                id: recipientId
+            },
+            message: {
+                attachment: {
+                    type: "template",
+                    payload: {
+                        template_type: "generic",
+                        elements: [{
+                            title: "Allstate",
+                            subtitle: "Allstate Insurance Company",
+                            item_url: "https://www.allstate.com/",
+                            image_url: SERVER_URL + "/assets/wallpaper.jpg",
+                            buttons: [{
+                                type: "web_url",
+                                url: "https://www.allstate.com/",
+                                title: "Open Web URL"
+                            }, {
+                                type: "postback",
+                                title: "Call Postback",
+                                payload: "Payload for first bubble",
+                            }],
+                        }, {
+                            title: "Auto",
+                            subtitle: "Get Auto Insurance",
+                            item_url: "https://www.allstate.com/auto-insurance.aspx",
+                            image_url: SERVER_URL + "/assets/wallpaper.jpg",
+                            buttons: [{
+                                type: "web_url",
+                                url: "https://www.allstate.com/auto-insurance.aspx",
+                                title: "Open Web URL"
+                            }, {
+                                type: "postback",
+                                title: "Call Postback",
+                                payload: "Payload for second bubble",
+                            }]
+                        }]
+                    }
                 }
             }
-        }
-    };
+        };
 
-    callSendAPI(messageData);
-}
+        callSendAPI(messageData);
+    }
 
-/*
- * Call the Send API. The message data goes in the body. If successful, we'll 
- * get the message id in a response 
- *
- */
-function callSendAPI(messageData) {
-    request({
-        uri: 'https://graph.facebook.com/v2.6/me/messages',
-        qs: { access_token: PAGE_ACCESS_TOKEN },
-        method: 'POST',
-        json: messageData
+    /*
+     * Send a message with the account linking call-to-action
+     *
+     */
+    function sendAccountLinking(recipientId) {
+        var messageData = {
+            recipient: {
+                id: recipientId
+            },
+            message: {
+                attachment: {
+                    type: "template",
+                    payload: {
+                        template_type: "button",
+                        text: "Welcome. Link your account.",
+                        buttons: [{
+                            type: "account_link",
+                            url: SERVER_URL + "/authorize"
+                        }]
+                    }
+                }
+            }
+        };
 
-    }, function (error, response, body) {
-        if (!error && response.statusCode == 200) {
-            var recipientId = body.recipient_id;
-            var messageId = body.message_id;
+        callSendAPI(messageData);
+    }
 
-            if (messageId) {
-                console.log("Successfully sent message with id %s to recipient %s",
-                  messageId, recipientId);
+    /*
+     * Call the Send API. The message data goes in the body. If successful, we'll 
+     * get the message id in a response 
+     *
+     */
+    function callSendAPI(messageData) {
+        request({
+            uri: 'https://graph.facebook.com/v2.6/me/messages',
+            qs: { access_token: PAGE_ACCESS_TOKEN },
+            method: 'POST',
+            json: messageData
+
+        }, function (error, response, body) {
+            if (!error && response.statusCode == 200) {
+                var recipientId = body.recipient_id;
+                var messageId = body.message_id;
+
+                if (messageId) {
+                    console.log("Successfully sent message with id %s to recipient %s",
+                      messageId, recipientId);
+                } else {
+                    console.log("Successfully called Send API for recipient %s",
+                      recipientId);
+                }
             } else {
-                console.log("Successfully called Send API for recipient %s",
-                  recipientId);
+                console.error("Failed calling Send API", response.statusCode, response.statusMessage, body.error);
             }
-        } else {
-            console.error("Failed calling Send API", response.statusCode, response.statusMessage, body.error);
-        }
+        });
+    }
+
+    // Start server
+    // Webhooks must be available via SSL with a certificate signed by a valid 
+    // certificate authority.
+    app.listen(app.get('port'), function () {
+        console.log('Node app is running on port', app.get('port'));
     });
-}
 
-// Start server
-// Webhooks must be available via SSL with a certificate signed by a valid 
-// certificate authority.
-app.listen(app.get('port'), function () {
-    console.log('Node app is running on port', app.get('port'));
-});
-
-module.exports = app;
+    module.exports = app;
 
