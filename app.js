@@ -323,13 +323,87 @@ function receivedPostback(event) {
 
   // When a postback is called, we'll send a message back to the sender to 
   // let them know it was successful
-	if(payload =="GET_START"){
+	if(payload == 'GET_START'){
 	GetStarted(senderID);
 	}
-	else
-	{  
+	else if(payload == 'GET_LIVE_HELP'){
+		sendGetLiveHelpMessage(sender);
+	}
+	else if(payload == 'GOT_IT'){
+		sendGotItMessage(sender);
+	}
+	else if(payload == 'AGENT_FINDER'){
+		sendAgentFinderMessage(sender);
+	}
+	else{  
 		sendTextMessage(senderID, "Postback called");
-	    }
+	}
+}
+
+function sendGetLiveHelpMessage(recipientId) {
+  var messageData = {
+    recipient: {
+      id: recipientId
+    },
+  message:{
+    attachment:{
+      type:"template",
+      payload:{
+        template_type:"generic",
+        elements:[
+           {
+            text:"No problem! Would you rather talk here through messenger or chat with someone over the phone?'",
+            buttons:[
+              {
+                type:"postback",
+                title:"Use Messenger",
+				payload:"USE_MESSENGER"
+              },{
+                type: "phone_number",,
+                title:"Call Customer Service",
+                payload: "+16505551234"
+              }              
+            ]      
+          }
+        ]
+      }
+    }
+  }
+  };  
+
+  callSendAPI(messageData);
+}
+
+function sendAgentFinderMessage(recipientId) {
+  var messageData = {
+    recipient: {
+      id: recipientId
+    },
+  message:{
+    attachment:{
+      type:"template",
+      payload:{
+        template_type:"generic",
+        elements:[
+           {
+            title: "Lets get started",
+            subtitle: "Select one of the options below or type a message to begin",
+            image_url: SERVER_URL   + "/assets/wallpaper.jpg",
+            buttons:[
+              {
+                type:"postback",
+                title:"Agent Finder",
+				payload:"AGENT_FINDER"
+              }              
+            ]      
+          }
+        ]
+      }
+    }
+  }
+  };  
+
+  callSendAPI(messageData);
 }
 
 /*
@@ -421,7 +495,7 @@ function sendCustomerSupportMessage(recipientId) {
   callSendAPI(messageData);
 }
 
-  function sendHelpMessage(recipientId) {
+function sendHelpMessage(recipientId) {
   var messageData = {
     recipient: {
       id: recipientId
@@ -434,7 +508,7 @@ function sendCustomerSupportMessage(recipientId) {
         elements:[
            {
             title:"Hi, I'm the Allstate Insurbot and I'm here to help",
-            subtitle:"To get started, simply select one of the menu options below or type a question or phrase.If you need any assistance at any time,just type 'help'",
+            text:"To get started, simply select one of the menu options below or type a question or phrase.If you need any assistance at any time,just type 'help'",
             buttons:[
               {
                 type:"postback",
