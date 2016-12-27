@@ -346,7 +346,7 @@ function receivedPostback(event) {
                 break;
 
             default:
-                sendTextMessage(senderID, "Postback called");
+                sendTextMessage(senderID,payload);
         }
     }
 }
