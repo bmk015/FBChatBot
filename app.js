@@ -330,13 +330,11 @@ function receivedPostback(event) {
         // the text we received.
         switch (payload) {
             case 'Get Live Help':
-                sendTextMessage(senderID, "get live passed");
-               // sendGetLiveHelpMessage(sender);
+                sendGetLiveHelpMessage(sender);
                 break;
 
             case 'Got it':
-                sendTextMessage(senderID, "got it caled");
-                //sendGotItMessage(sender);
+                sendGotItMessage(sender);
                 break;
 
             case 'Agent Finder':
@@ -396,23 +394,17 @@ function receivedPostback(event) {
                 attachment: {
                     type: "template",
                     payload: {
-                        template_type: "generic",
-                        elements: [
-                           {
-                               text: "No problem! Would you rather talk here through messenger or chat with someone over the phone?'",
-                               buttons: [
-                                 {
-                                     type: "postback",
-                                     title: "Use Messenger",
-                                     payload: "USE_MESSENGER"
-                                 }, {
-                                     type: "phone_number",
-                                     title: "Call Customer Service",
-                                     payload: "+16505551234"
-                                 }
-                               ]
-                           }
-                        ]
+                        template_type: "button",
+                        text: "No problem! Would you rather talk here through messenger or chat with someone over the phone?'",
+                        buttons: [{
+                            type: "postback",
+                            title: "Use Messenger",
+                            payload: "USE_MESSENGER"
+                        }, {
+                            type: "phone_number",
+                            title: "Call Customer Service",
+                            payload: "+16505551234"
+                        }]
                     }
                 }
             }
@@ -422,7 +414,7 @@ function receivedPostback(event) {
     }
 
 
-    function sendAgentFinderMessage(recipientId) {
+    function sendGotItMessage(recipientId) {
         var messageData = {
             recipient: {
                 id: recipientId
