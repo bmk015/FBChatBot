@@ -329,24 +329,20 @@ function receivedPostback(event) {
         // keywords and send back the corresponding example. Otherwise, just echo
         // the text we received.
         switch (payload) {
-            case 'GET_START':
-                GetStarted(senderID);
-                break;
-
-            case 'GET_LIVE_HELP':
+            case 'Get Live Help':
                 sendGetLiveHelpMessage(sender);
                 break;
 
-            case 'GOT_IT':
+            case 'Got it':
                 sendGotItMessage(sender);
                 break;
 
-            case 'AGENT_FINDER':
+            case 'Agent Finder':
                 sendAgentFinderMessage(sender);
                 break;
 
             default:
-                sendTextMessage(senderID,payload);
+                sendTextMessage(senderID, payload);
         }
     }
 }
@@ -443,7 +439,7 @@ function receivedPostback(event) {
                                  {
                                      type: "postback",
                                      title: "Agent Finder",
-                                     payload: "AGENT_FINDER"
+                                     payload: "Agent Finder"
                                  }
                                ]
                            }
@@ -526,12 +522,12 @@ function receivedPostback(event) {
                            {
                                type: "postback",
                                title: "Got it",
-                               payload: "GOT_IT"
+                               payload: "Got it"
                            },
                             {
                                 type: "postback",
                                 title: "Get Live Help",
-                                payload: "GET_LIVE_HELP"
+                                payload: "Get Live Help"
                             }
                         ]
                     }
