@@ -342,7 +342,8 @@ function receivedPostback(event) {
                 break;
 
             default:
-                sendTextMessage(senderID, payload);
+                sendGetLiveHelpMessage(sender);
+                //sendTextMessage(senderID, payload);
         }
     }
 }
@@ -463,7 +464,7 @@ function receivedPostback(event) {
                 id: recipientId
             },
             message: {
-                text: messageText + "dd",
+                text: messageText,
                 metadata: "DEVELOPER_DEFINED_METADATA"
             }
         };
