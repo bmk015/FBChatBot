@@ -279,7 +279,8 @@ function receivedMessage(event) {
                 sendAgentFinderMessage(sender);
                 break;
             default:
-                sendTextMessage(senderID, messageText);
+             sendGotItMessage(sender);
+               // sendTextMessage(senderID, messageText);
         }
     } else if (messageAttachments) {
         sendTextMessage(senderID, "Message with attachment received");
