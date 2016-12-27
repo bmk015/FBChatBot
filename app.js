@@ -268,15 +268,15 @@ function receivedMessage(event) {
                 break;
 
             case 'Get Live Help':
-                sendGetLiveHelpMessage(sender);
+                sendGetLiveHelpMessage(senderID);
                 break;
 
             case 'Got it':
-                sendGotItMessage(sender);
+                sendGotItMessage(senderID);
                 break;
 
             case 'Agent Finder':
-                sendAgentFinderMessage(sender);
+                sendAgentFinderMessage(senderID);
                 break;
             default:
                 sendTextMessage(senderID, messageText);
