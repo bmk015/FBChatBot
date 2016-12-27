@@ -331,7 +331,8 @@ function receivedPostback(event) {
         switch (payload) {
             case 'Get Live Help':
                 // sendGetLiveHelpMessage(sender);
-                sendCustomerSupportMessage(sender);
+                //sendCustomerSupportMessage(sender);
+                sendTextMessage(senderID, "dd")
                 break;
 
             case 'Got it':
