@@ -330,11 +330,13 @@ function receivedPostback(event) {
         // the text we received.
         switch (payload) {
             case 'Get Live Help':
-                sendGetLiveHelpMessage(sender);
+                sendTextMessage(senderID, "get live passed");
+               // sendGetLiveHelpMessage(sender);
                 break;
 
             case 'Got it':
-                sendGotItMessage(sender);
+                sendTextMessage(senderID, "got it caled");
+                //sendGotItMessage(sender);
                 break;
 
             case 'Agent Finder':
@@ -342,8 +344,7 @@ function receivedPostback(event) {
                 break;
 
             default:
-                sendGetLiveHelpMessage(sender);
-                //sendTextMessage(senderID, payload);
+                sendTextMessage(senderID, payload);
         }
     }
 }
