@@ -267,6 +267,17 @@ function receivedMessage(event) {
                 sendAccountLinking(senderID);
                 break;
 
+            case 'Get Live Help':
+                sendGetLiveHelpMessage(sender);
+                break;
+
+            case 'Got it':
+                sendGotItMessage(sender);
+                break;
+
+            case 'Agent Finder':
+                sendAgentFinderMessage(sender);
+                break;
             default:
                 sendTextMessage(senderID, messageText);
         }
@@ -323,29 +334,7 @@ function receivedPostback(event) {
 
     // When a postback is called, we'll send a message back to the sender to 
     // let them know it was successful
-    if (payload) {
-
-        // If we receive a text message, check to see if it matches any special
-        // keywords and send back the corresponding example. Otherwise, just echo
-        // the text we received.
-        switch (payload) {
-            case 'Get Live Help':
-                sendTextMessage(senderID, payload);
-                 sendGetLiveHelpMessage(sender);
-                break;
-
-            case 'Got it':
-                sendGotItMessage(sender);
-                break;
-
-            case 'Agent Finder':
-                sendAgentFinderMessage(sender);
-                break;
-
-            default:
-                sendTextMessage(senderID, payload);
-        }
-    }
+    sendTextMessage(senderID, "Postback called");
 }
 
     /*
