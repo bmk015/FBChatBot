@@ -272,7 +272,8 @@ function receivedMessage(event) {
             case 'account linking':
                 sendAccountLinking(senderID);
                 break;
-
+            
+            case 'help':
             case 'get live help':
                 sendGetLiveHelpMessage(senderID);
                 break;
