@@ -250,8 +250,12 @@ function receivedMessage(event) {
         // If we receive a text message, check to see if it matches any special
         // keywords and send back the corresponding example. Otherwise, just echo
         // the text we received.
-        switch (messageText) {
-            case 'help':
+        switch (messageText.toowerCase()) {
+            case 'hi':
+                sendHelpMessage(senderID);
+                break;
+
+            case 'hello':
                 sendHelpMessage(senderID);
                 break;
 
@@ -267,15 +271,15 @@ function receivedMessage(event) {
                 sendAccountLinking(senderID);
                 break;
 
-            case 'Get Live Help':
+            case 'get live help':
                 sendGetLiveHelpMessage(senderID);
                 break;
 
-            case 'Got it':
+            case 'got it':
                 sendGotItMessage(senderID);
                 break;
 
-            case 'Agent Finder':
+            case 'agent finder':
                 sendAgentFinderMessage(senderID);
                 break;
             default:
