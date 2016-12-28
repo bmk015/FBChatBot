@@ -350,6 +350,10 @@ function receivedPostback(event) {
     // When a postback is called, we'll send a message back to the sender to 
     // let them know it was successful
     switch (payload.toLowerCase()) {
+        case 'user_defined_payload':  
+             sendHelpMessage(senderID);
+             break;
+        
         case 'get live help':
             sendGetLiveHelpMessage(senderID);
             break;
@@ -361,6 +365,7 @@ function receivedPostback(event) {
         case 'allstate agent':
             sendAgentFinderMessage(senderID);
             break;
+        
         default:
             sendTextMessage(senderID, payload);
     }
