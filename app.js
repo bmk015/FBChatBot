@@ -338,7 +338,8 @@ function receivedPostback(event) {
 
     // When a postback is called, we'll send a message back to the sender to 
     // let them know it was successful
-    sendTextMessage(senderID, payload);
+    //sendTextMessage(senderID, payload);
+    sendGetLiveHelpMessage(senderID);
 }
 
     /*
