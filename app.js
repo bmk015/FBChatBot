@@ -659,7 +659,7 @@ function receivedPostback(event) {
                                 title: "Call",
                                 payload: "+16505551234"
                             }, {
-                                type: "email",
+                                type: "postback",
                                 title: "Email",
                                 payload: "xyz@gmail.com",
                             },
@@ -678,7 +678,7 @@ function receivedPostback(event) {
                                 title: "Call",
                                 payload: "+16505551234"
                             }, {
-                                type: "email",
+                                type: "postback",
                                 title: "Email",
                                 payload: "xyz@gmail.com",
                             },
