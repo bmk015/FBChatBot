@@ -250,7 +250,8 @@ function receivedMessage(event) {
         // If we receive a text message, check to see if it matches any special
         // keywords and send back the corresponding example. Otherwise, just echo
         // the text we received.
-        switch (messageText.toLowerCase()) {
+        var msgTxt = messageText.toLowerCase();
+        switch (msgTxt) {
             case 'hi':
                 sendHelpMessage(senderID);
                 break;
@@ -279,9 +280,14 @@ function receivedMessage(event) {
                 sendGotItMessage(senderID);
                 break;
 
-            case 'agent finder':
+            case 'allstate agent':
                 sendAgentFinderMessage(senderID);
                 break;
+
+            case msgTxt.includes('zipcode'):
+                sendAgentListMessage(senderID);
+                break;
+                
             default:
                 sendTextMessage(senderID, messageText);
         }
@@ -400,7 +406,7 @@ function receivedPostback(event) {
                 id: recipientId
             },
             message: {
-                text: "Okay, I'll help you find one nearby. Give me just  a moment",
+                text: "Please enter your zip code, as 'Zipcode:78745'",
             }
         };
         callSendAPI(messageData);
@@ -620,6 +626,63 @@ function receivedPostback(event) {
                         buttons: [{
                             type: "account_link",
                             url: SERVER_URL + "/authorize"
+                        }]
+                    }
+                }
+            }
+        };
+
+        callSendAPI(messageData);
+    }
+
+    function sendAgentListMessage(recipientId) {
+        var messageData = {
+            recipient: {
+                id: recipientId
+            },
+            message: {
+                attachment: {
+                    type: "template",
+                    payload: {
+                        template_type: "generic",
+                        elements: [{
+                            title: "Harley",
+                            subtitle: "Allstate Insurance Company",
+                            item_url: "https://www.allstate.com/",
+                            image_url: SERVER_URL + "/assets/wallpaper.jpg",
+                            buttons: [{
+                                type: "phone_number",
+                                title: "Call",
+                                payload: "+16505551234"
+                            }, {
+                                type: "email",
+                                title: "Email",
+                                payload: "xyz@gmail.com",
+                            },
+                            {
+                                type: "web_url",
+                                url: "https://www.allstate.com/",
+                                title: "View Agent's Website"
+                            }],
+                        }, {
+                            title: "David",
+                            subtitle: "Allstate Insurance Company",
+                            item_url: "https://www.allstate.com/auto-insurance.aspx",
+                            image_url: SERVER_URL + "/assets/wallpaper.jpg",
+                            buttons: [{
+                                type: "phone_number",
+                                title: "Call",
+                                payload: "+16505551234"
+                            }, {
+                                type: "email",
+                                title: "Email",
+                                payload: "xyz@gmail.com",
+                            },
+                            {
+                                type: "web_url",
+                                url: "https://www.allstate.com/",
+                                title: "View Agent's Website"
+                            }]
                         }]
                     }
                 }
