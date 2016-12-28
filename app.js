@@ -255,10 +255,8 @@ function receivedMessage(event) {
             msgTxt = 'zipcode';
         }
         switch (msgTxt) {
+            case 'user_defined_payload:           
             case 'hi':
-                sendHelpMessage(senderID);
-                break;
-
             case 'hello':
                 sendHelpMessage(senderID);
                 break;
