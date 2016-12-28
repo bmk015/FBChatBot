@@ -461,7 +461,7 @@ function receivedPostback(event) {
                            {
                                title: "Lets get started",
                                subtitle: "Select one of the options below or type a message to begin",
-                               image_url: SERVER_URL + "/assets/wallpaper.jpg",
+                               image_url: SERVER_URL + "/assets/allstate_026_1_b_blue_large.jpg",
                                buttons: [
                                  {
                                      type: "postback",
@@ -582,7 +582,7 @@ function receivedPostback(event) {
                             title: "Allstate",
                             subtitle: "Allstate Insurance Company",
                             item_url: "https://www.allstate.com/",
-                            image_url: SERVER_URL + "/assets/wallpaper.jpg",
+                            image_url: SERVER_URL + "/assets/allstate_026_1_b_blue_large.jpg",
                             buttons: [{
                                 type: "web_url",
                                 url: "https://www.allstate.com/",
@@ -596,7 +596,7 @@ function receivedPostback(event) {
                             title: "Auto",
                             subtitle: "Get Auto Insurance",
                             item_url: "https://www.allstate.com/auto-insurance.aspx",
-                            image_url: SERVER_URL + "/assets/wallpaper.jpg",
+                            image_url: SERVER_URL + "/assets/allstate_026_1_b_blue_large.jpg",
                             buttons: [{
                                 type: "web_url",
                                 url: "https://www.allstate.com/auto-insurance.aspx",
