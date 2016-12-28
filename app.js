@@ -667,7 +667,7 @@ function receivedPostback(event) {
                                 type: "web_url",
                                 url: "https://www.allstate.com/",
                                 title: "View Agent's Website"
-                            }],
+                            }]
                         }, {
                             title: "David",
                             subtitle: "Allstate Insurance Company",
