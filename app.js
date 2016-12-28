@@ -656,7 +656,7 @@ function receivedPostback(event) {
                             title: "Isabella",
                             subtitle: "Allstate Insurance Company",
                             item_url: "https://www.allstate.com/",
-                            image_url: SERVER_URL + "/assets/images%20(1).jpg",
+                            image_url: SERVER_URL + "/assets/agent2.jpg",
                             buttons: [{
                                 type: "phone_number",
                                 title: "Call",
