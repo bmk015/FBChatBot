@@ -347,7 +347,7 @@ function receivedPostback(event) {
             sendGotItMessage(senderID);
             break;
 
-        case 'agent finder':
+        case 'allstate agent':
             sendAgentFinderMessage(senderID);
             break;
         default:
@@ -392,6 +392,18 @@ function receivedPostback(event) {
 
         console.log("Received account link event with for user %d with status %s " +
           "and auth code %s ", senderID, status, authCode);
+    }
+
+    function sendAgentFinderMessage(recipientId) {
+        var messageData = {
+            recipient: {
+                id: recipientId
+            },
+            message: {
+                text: "Okay, I'll help you find one nearby. Give me just  a moment",
+            }
+        };
+        callSendAPI(messageData);
     }
 
     function sendGetLiveHelpMessage(recipientId) {
@@ -441,7 +453,7 @@ function receivedPostback(event) {
                                  {
                                      type: "postback",
                                      title: "Agent Finder",
-                                     payload: "Agent Finder"
+                                     payload: "Allstate agent"
                                  }
                                ]
                            }
