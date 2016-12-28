@@ -338,8 +338,22 @@ function receivedPostback(event) {
 
     // When a postback is called, we'll send a message back to the sender to 
     // let them know it was successful
-    //sendTextMessage(senderID, payload);
-    sendGetLiveHelpMessage(senderID);
+    switch (payload.toLowerCase()) {
+        case 'get live help':
+            sendGetLiveHelpMessage(senderID);
+            break;
+
+        case 'got it':
+            sendGotItMessage(senderID);
+            break;
+
+        case 'agent finder':
+            sendAgentFinderMessage(senderID);
+            break;
+        default:
+            sendTextMessage(senderID, payload);
+    }
+   
 }
 
     /*
@@ -394,7 +408,7 @@ function receivedPostback(event) {
                         buttons: [{
                             type: "postback",
                             title: "Use Messenger",
-                            payload: "USE_MESSENGER"
+                            payload: "Use Messenger"
                         }, {
                             type: "phone_number",
                             title: "Call Customer Service",
