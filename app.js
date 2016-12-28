@@ -675,7 +675,7 @@ function receivedPostback(event) {
                             title: "Olivia",
                             subtitle: "Allstate Insurance Company",
                             item_url: "https://www.allstate.com/auto-insurance.aspx",
-                            image_url: SERVER_URL + "/assets/images.jpg",
+                            image_url: SERVER_URL + "/assets/agent1.png",
                             buttons: [{
                                 type: "phone_number",
                                 title: "Call",
