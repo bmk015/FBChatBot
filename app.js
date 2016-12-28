@@ -287,6 +287,10 @@ function receivedMessage(event) {
             case msgTxt.includes('zipcode'):
                 sendAgentListMessage(senderID);
                 break;
+
+            case 'agents':
+                sendAgentListMessage(senderID);
+                break;
                 
             default:
                 sendTextMessage(senderID, messageText);
