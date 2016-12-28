@@ -250,7 +250,7 @@ function receivedMessage(event) {
         // If we receive a text message, check to see if it matches any special
         // keywords and send back the corresponding example. Otherwise, just echo
         // the text we received.
-        switch (messageText.toowerCase()) {
+        switch (messageText.toLowerCase()) {
             case 'hi':
                 sendHelpMessage(senderID);
                 break;
