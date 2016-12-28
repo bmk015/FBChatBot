@@ -653,10 +653,10 @@ function receivedPostback(event) {
                     payload: {
                         template_type: "generic",
                         elements: [{
-                            title: "Harley",
+                            title: "Isabella",
                             subtitle: "Allstate Insurance Company",
                             item_url: "https://www.allstate.com/",
-                            image_url: SERVER_URL + "/assets/wallpaper.jpg",
+                            image_url: SERVER_URL + "/assets/images (1).jpgg",
                             buttons: [{
                                 type: "phone_number",
                                 title: "Call",
@@ -672,10 +672,10 @@ function receivedPostback(event) {
                                 title: "View Agent's Website"
                             }]
                         }, {
-                            title: "David",
+                            title: "Olivia",
                             subtitle: "Allstate Insurance Company",
                             item_url: "https://www.allstate.com/auto-insurance.aspx",
-                            image_url: SERVER_URL + "/assets/wallpaper.jpg",
+                            image_url: SERVER_URL + "/assets/images.jpg",
                             buttons: [{
                                 type: "phone_number",
                                 title: "Call",
