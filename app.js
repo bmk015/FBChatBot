@@ -251,6 +251,9 @@ function receivedMessage(event) {
         // keywords and send back the corresponding example. Otherwise, just echo
         // the text we received.
         var msgTxt = messageText.toLowerCase();
+        if (msgTxt.includes('zipcode')) {
+            msgTxt = 'zipcode';
+        }
         switch (msgTxt) {
             case 'hi':
                 sendHelpMessage(senderID);
@@ -284,7 +287,7 @@ function receivedMessage(event) {
                 sendAgentFinderMessage(senderID);
                 break;
 
-            case msgTxt.includes('zipcode'):
+            case 'zipcode':
                 sendAgentListMessage(senderID);
                 break;
 
