@@ -13,6 +13,7 @@ const
   express = require('express'),
   https = require('https'),
   request = require('request');
+  q = require('q');
 
 var app = express();
 app.set('port', process.env.PORT || 5000);
@@ -255,7 +256,7 @@ function receivedMessage(event) {
             msgTxt = 'zipcode';
         }
         switch (msgTxt) {
-            case 'user_defined_payload':           
+            case 'user_defined_payload':
             case 'hi':
             case 'hello':
                 sendHelpMessage(senderID);
@@ -272,7 +273,7 @@ function receivedMessage(event) {
             case 'account linking':
                 sendAccountLinking(senderID);
                 break;
-            
+
             case 'help':
             case 'get live help':
                 sendGetLiveHelpMessage(senderID);
@@ -287,13 +288,14 @@ function receivedMessage(event) {
                 break;
 
             case 'zipcode':
-                sendAgentListMessage(senderID);
+                sendAgentFinderWaitMessage(senderID);
+                //sendAgentListMessage(senderID);
                 break;
 
             case 'agents':
                 sendAgentListMessage(senderID);
                 break;
-                
+
             default:
                 sendTextMessage(senderID, messageText);
         }
@@ -351,10 +353,10 @@ function receivedPostback(event) {
     // When a postback is called, we'll send a message back to the sender to 
     // let them know it was successful
     switch (payload.toLowerCase()) {
-        case 'user_defined_payload':  
-             sendHelpMessage(senderID);
-             break;
-        
+        case 'user_defined_payload':
+            sendHelpMessage(senderID);
+            break;
+
         case 'get live help':
             sendGetLiveHelpMessage(senderID);
             break;
@@ -366,213 +368,301 @@ function receivedPostback(event) {
         case 'allstate agent':
             sendAgentFinderMessage(senderID);
             break;
-        
+
         default:
             sendTextMessage(senderID, payload);
     }
-   
+
 }
 
-    /*
-     * Message Read Event
-     *
-     * This event is called when a previously-sent message has been read.
-     * https://developers.facebook.com/docs/messenger-platform/webhook-reference/message-read
-     * 
-     */
-    function receivedMessageRead(event) {
-        var senderID = event.sender.id;
-        var recipientID = event.recipient.id;
+/*
+ * Message Read Event
+ *
+ * This event is called when a previously-sent message has been read.
+ * https://developers.facebook.com/docs/messenger-platform/webhook-reference/message-read
+ * 
+ */
+function receivedMessageRead(event) {
+    var senderID = event.sender.id;
+    var recipientID = event.recipient.id;
 
-        // All messages before watermark (a timestamp) or sequence have been seen.
-        var watermark = event.read.watermark;
-        var sequenceNumber = event.read.seq;
+    // All messages before watermark (a timestamp) or sequence have been seen.
+    var watermark = event.read.watermark;
+    var sequenceNumber = event.read.seq;
 
-        console.log("Received message read event for watermark %d and sequence " +
-          "number %d", watermark, sequenceNumber);
-    }
+    console.log("Received message read event for watermark %d and sequence " +
+      "number %d", watermark, sequenceNumber);
+}
 
-    /*
-     * Account Link Event
-     *
-     * This event is called when the Link Account or UnLink Account action has been
-     * tapped.
-     * https://developers.facebook.com/docs/messenger-platform/webhook-reference/account-linking
-     * 
-     */
-    function receivedAccountLink(event) {
-        var senderID = event.sender.id;
-        var recipientID = event.recipient.id;
+/*
+ * Account Link Event
+ *
+ * This event is called when the Link Account or UnLink Account action has been
+ * tapped.
+ * https://developers.facebook.com/docs/messenger-platform/webhook-reference/account-linking
+ * 
+ */
+function receivedAccountLink(event) {
+    var senderID = event.sender.id;
+    var recipientID = event.recipient.id;
 
-        var status = event.account_linking.status;
-        var authCode = event.account_linking.authorization_code;
+    var status = event.account_linking.status;
+    var authCode = event.account_linking.authorization_code;
 
-        console.log("Received account link event with for user %d with status %s " +
-          "and auth code %s ", senderID, status, authCode);
-    }
+    console.log("Received account link event with for user %d with status %s " +
+      "and auth code %s ", senderID, status, authCode);
+}
 
-    function sendAgentFinderMessage(recipientId) {
-        var messageData = {
-            recipient: {
-                id: recipientId
-            },
-            message: {
-                text: "Please enter your zip code, as 'Zipcode:78745'",
+function sendAgentFinderWaitMessage(recipientId) {
+    var messageData = {
+        recipient: {
+            id: recipientId
+        },
+        message: {
+            text: "Wait for a moment , Finding agents near by you",
+        }
+    };
+    callSendAPI(messageData);
+    sendAgentListMessage(recipientId);
+}
+
+function sendAgentFinderMessage(recipientId) {
+    var messageData = {
+        recipient: {
+            id: recipientId
+        },
+        message: {
+            text: "Please enter your zip code and statecode, as 'zipcode:78745 state:IL'",
+        }
+    };
+    callSendAPI(messageData);
+}
+
+function sendGetLiveHelpMessage(recipientId) {
+    var messageData = {
+        recipient: {
+            id: recipientId
+        },
+        message: {
+            attachment: {
+                type: "template",
+                payload: {
+                    template_type: "button",
+                    text: "No problem! Would you rather talk here through messenger or chat with someone over the phone?'",
+                    buttons: [{
+                        type: "postback",
+                        title: "Use Messenger",
+                        payload: "Use Messenger"
+                    }, {
+                        type: "phone_number",
+                        title: "Call Customer Service",
+                        payload: "+16505551234"
+                    }]
+                }
             }
-        };
-        callSendAPI(messageData);
-    }
+        }
+    };
+    callSendAPI(messageData);
+}
 
-    function sendGetLiveHelpMessage(recipientId) {
-        var messageData = {
-            recipient: {
-                id: recipientId
-            },
-            message: {
-                attachment: {
-                    type: "template",
-                    payload: {
-                        template_type: "button",
-                        text: "No problem! Would you rather talk here through messenger or chat with someone over the phone?'",
-                        buttons: [{
+
+function sendGotItMessage(recipientId) {
+    var messageData = {
+        recipient: {
+            id: recipientId
+        },
+        message: {
+            attachment: {
+                type: "template",
+                payload: {
+                    template_type: "generic",
+                    elements: [
+                       {
+                           title: "Lets get started",
+                           subtitle: "Select one of the options below or type a message to begin",
+                           image_url: SERVER_URL + "/assets/allstate_026_1_b_blue_large.jpg",
+                           buttons: [
+                             {
+                                 type: "postback",
+                                 title: "Agent Finder",
+                                 payload: "Allstate agent"
+                             }
+                           ]
+                       }
+                    ]
+                }
+            }
+        }
+    };
+
+    callSendAPI(messageData);
+}
+
+
+/*
+ * Send a text message using the Send API.
+ *
+ */
+function sendTextMessage(recipientId, messageText) {
+    var messageData = {
+        recipient: {
+            id: recipientId
+        },
+        message: {
+            text: messageText,
+            metadata: "DEVELOPER_DEFINED_METADATA"
+        }
+    };
+
+    callSendAPI(messageData);
+}
+
+/*
+ * Send a customer support message using the Send API.
+ *
+ */
+function sendCustomerSupportMessage(recipientId) {
+    var messageData = {
+        recipient: {
+            id: recipientId
+        },
+        message: {
+            attachment: {
+                type: "template",
+                payload: {
+                    template_type: "button",
+                    text: "Allstate Insurance Company",
+                    buttons: [{
+                        type: "web_url",
+                        url: "https://www.allstate.com/",
+                        title: "Open Web URL"
+                    }, {
+                        type: "phone_number",
+                        title: "Call Phone Number",
+                        payload: "+16505551234"
+                    }]
+                }
+            }
+        }
+    };
+
+    callSendAPI(messageData);
+}
+
+/*
+ * Send a help message using the Send API.
+ *
+ */
+function sendHelpMessage(recipientId) {
+    var messageData = {
+        recipient: {
+            id: recipientId
+        },
+        message: {
+            attachment: {
+                type: "template",
+                payload: {
+                    template_type: "button",
+                    text: "Hi, I'm the Allstate Insurbot and I'm here to help \nTo get started, simply select one of the menu options below or type a question or phrase.If you need any assistance at any time,just type 'help'",
+                    buttons: [
+                       {
+                           type: "postback",
+                           title: "Got it",
+                           payload: "Got it"
+                       },
+                        {
                             type: "postback",
-                            title: "Use Messenger",
-                            payload: "Use Messenger"
-                        }, {
-                            type: "phone_number",
-                            title: "Call Customer Service",
-                            payload: "+16505551234"
-                        }]
-                    }
+                            title: "Get Live Help",
+                            payload: "Get Live Help"
+                        }
+                    ]
                 }
             }
-        };
-        callSendAPI(messageData);
+        }
     }
+    callSendAPI(messageData);
+}
 
-
-    function sendGotItMessage(recipientId) {
-        var messageData = {
-            recipient: {
-                id: recipientId
-            },
-            message: {
-                attachment: {
-                    type: "template",
-                    payload: {
-                        template_type: "generic",
-                        elements: [
-                           {
-                               title: "Lets get started",
-                               subtitle: "Select one of the options below or type a message to begin",
-                               image_url: SERVER_URL + "/assets/allstate_026_1_b_blue_large.jpg",
-                               buttons: [
-                                 {
-                                     type: "postback",
-                                     title: "Agent Finder",
-                                     payload: "Allstate agent"
-                                 }
-                               ]
-                           }
-                        ]
-                    }
-                }
-            }
-        };
-
-        callSendAPI(messageData);
-    }
-
-
-    /*
-     * Send a text message using the Send API.
-     *
-     */
-    function sendTextMessage(recipientId, messageText) {
-        var messageData = {
-            recipient: {
-                id: recipientId
-            },
-            message: {
-                text: messageText,
-                metadata: "DEVELOPER_DEFINED_METADATA"
-            }
-        };
-
-        callSendAPI(messageData);
-    }
-
-    /*
-     * Send a customer support message using the Send API.
-     *
-     */
-    function sendCustomerSupportMessage(recipientId) {
-        var messageData = {
-            recipient: {
-                id: recipientId
-            },
-            message: {
-                attachment: {
-                    type: "template",
-                    payload: {
-                        template_type: "button",
-                        text: "Allstate Insurance Company",
+/*
+ * Send a Structured Message (Generic Message type) using the Send API.
+ *
+ */
+function sendGenericMessage(recipientId) {
+    var messageData = {
+        recipient: {
+            id: recipientId
+        },
+        message: {
+            attachment: {
+                type: "template",
+                payload: {
+                    template_type: "generic",
+                    elements: [{
+                        title: "Allstate",
+                        subtitle: "Allstate Insurance Company",
+                        item_url: "https://www.allstate.com/",
+                        image_url: SERVER_URL + "/assets/allstate_026_1_b_blue_large.jpg",
                         buttons: [{
                             type: "web_url",
                             url: "https://www.allstate.com/",
                             title: "Open Web URL"
                         }, {
-                            type: "phone_number",
-                            title: "Call Phone Number",
-                            payload: "+16505551234"
+                            type: "postback",
+                            title: "Call Postback",
+                            payload: "Payload for first bubble",
+                        }],
+                    }, {
+                        title: "Auto",
+                        subtitle: "Get Auto Insurance",
+                        item_url: "https://www.allstate.com/auto-insurance.aspx",
+                        image_url: SERVER_URL + "/assets/allstate_026_1_b_blue_large.jpg",
+                        buttons: [{
+                            type: "web_url",
+                            url: "https://www.allstate.com/auto-insurance.aspx",
+                            title: "Open Web URL"
+                        }, {
+                            type: "postback",
+                            title: "Call Postback",
+                            payload: "Payload for second bubble",
                         }]
-                    }
-                }
-            }
-        };
-
-        callSendAPI(messageData);
-    }
-
-    /*
-     * Send a help message using the Send API.
-     *
-     */
-    function sendHelpMessage(recipientId) {
-        var messageData = {
-            recipient: {
-                id: recipientId
-            },
-            message: {
-                attachment: {
-                    type: "template",
-                    payload: {
-                        template_type: "button",
-                        text: "Hi, I'm the Allstate Insurbot and I'm here to help \nTo get started, simply select one of the menu options below or type a question or phrase.If you need any assistance at any time,just type 'help'",
-                        buttons: [
-                           {
-                               type: "postback",
-                               title: "Got it",
-                               payload: "Got it"
-                           },
-                            {
-                                type: "postback",
-                                title: "Get Live Help",
-                                payload: "Get Live Help"
-                            }
-                        ]
-                    }
+                    }]
                 }
             }
         }
-        callSendAPI(messageData);
-    }
+    };
 
-    /*
-     * Send a Structured Message (Generic Message type) using the Send API.
-     *
-     */
-    function sendGenericMessage(recipientId) {
+    callSendAPI(messageData);
+}
+
+/*
+ * Send a message with the account linking call-to-action
+ *
+ */
+function sendAccountLinking(recipientId) {
+    var messageData = {
+        recipient: {
+            id: recipientId
+        },
+        message: {
+            attachment: {
+                type: "template",
+                payload: {
+                    template_type: "button",
+                    text: "Welcome. Link your account.",
+                    buttons: [{
+                        type: "account_link",
+                        url: SERVER_URL + "/authorize"
+                    }]
+                }
+            }
+        }
+    };
+
+    callSendAPI(messageData);
+}
+
+function sendAgentListMessage(recipientId) {
+   // getAgentList("60660", "IL").then(function (responseObj) {
         var messageData = {
             recipient: {
                 id: recipientId
@@ -583,81 +673,8 @@ function receivedPostback(event) {
                     payload: {
                         template_type: "generic",
                         elements: [{
-                            title: "Allstate",
-                            subtitle: "Allstate Insurance Company",
-                            item_url: "https://www.allstate.com/",
-                            image_url: SERVER_URL + "/assets/allstate_026_1_b_blue_large.jpg",
-                            buttons: [{
-                                type: "web_url",
-                                url: "https://www.allstate.com/",
-                                title: "Open Web URL"
-                            }, {
-                                type: "postback",
-                                title: "Call Postback",
-                                payload: "Payload for first bubble",
-                            }],
-                        }, {
-                            title: "Auto",
-                            subtitle: "Get Auto Insurance",
-                            item_url: "https://www.allstate.com/auto-insurance.aspx",
-                            image_url: SERVER_URL + "/assets/allstate_026_1_b_blue_large.jpg",
-                            buttons: [{
-                                type: "web_url",
-                                url: "https://www.allstate.com/auto-insurance.aspx",
-                                title: "Open Web URL"
-                            }, {
-                                type: "postback",
-                                title: "Call Postback",
-                                payload: "Payload for second bubble",
-                            }]
-                        }]
-                    }
-                }
-            }
-        };
-
-        callSendAPI(messageData);
-    }
-
-    /*
-     * Send a message with the account linking call-to-action
-     *
-     */
-    function sendAccountLinking(recipientId) {
-        var messageData = {
-            recipient: {
-                id: recipientId
-            },
-            message: {
-                attachment: {
-                    type: "template",
-                    payload: {
-                        template_type: "button",
-                        text: "Welcome. Link your account.",
-                        buttons: [{
-                            type: "account_link",
-                            url: SERVER_URL + "/authorize"
-                        }]
-                    }
-                }
-            }
-        };
-
-        callSendAPI(messageData);
-    }
-
-    function sendAgentListMessage(recipientId) {
-        var messageData = {
-            recipient: {
-                id: recipientId
-            },
-            message: {
-                attachment: {
-                    type: "template",
-                    payload: {
-                        template_type: "generic",
-                        elements: [{
-                            title: "Isabella",
+                            // title: responseObj.agents[0].name,
+                            title:"Isbella",
                             subtitle: "Allstate Insurance Company",
                             item_url: "https://www.allstate.com/",
                             image_url: SERVER_URL + "/assets/agent2.jpg",
@@ -701,44 +718,84 @@ function receivedPostback(event) {
         };
 
         callSendAPI(messageData);
-    }
+   // });
 
-    /*
-     * Call the Send API. The message data goes in the body. If successful, we'll 
-     * get the message id in a response 
-     *
-     */
-    function callSendAPI(messageData) {
-        request({
-            uri: 'https://graph.facebook.com/v2.6/me/messages',
-            qs: { access_token: PAGE_ACCESS_TOKEN },
-            method: 'POST',
-            json: messageData
+}
 
-        }, function (error, response, body) {
-            if (!error && response.statusCode == 200) {
-                var recipientId = body.recipient_id;
-                var messageId = body.message_id;
+/*
+ * Call the Send API. The message data goes in the body. If successful, we'll 
+ * get the message id in a response 
+ *
+ */
+function callSendAPI(messageData) {
+    request({
+        uri: 'https://graph.facebook.com/v2.6/me/messages',
+        qs: { access_token: PAGE_ACCESS_TOKEN },
+        method: 'POST',
+        json: messageData
 
-                if (messageId) {
-                    console.log("Successfully sent message with id %s to recipient %s",
-                      messageId, recipientId);
-                } else {
-                    console.log("Successfully called Send API for recipient %s",
-                      recipientId);
-                }
+    }, function (error, response, body) {
+        if (!error && response.statusCode == 200) {
+            var recipientId = body.recipient_id;
+            var messageId = body.message_id;
+
+            if (messageId) {
+                console.log("Successfully sent message with id %s to recipient %s",
+                  messageId, recipientId);
             } else {
-                console.error("Failed calling Send API", response.statusCode, response.statusMessage, body.error);
+                console.log("Successfully called Send API for recipient %s",
+                  recipientId);
             }
-        });
-    }
+        } else {
+            console.error("Failed calling Send API", response.statusCode, response.statusMessage, body.error);
+        }
+    });
+}
 
-    // Start server
-    // Webhooks must be available via SSL with a certificate signed by a valid 
-    // certificate authority.
-    app.listen(app.get('port'), function () {
-        console.log('Node app is running on port', app.get('port'));
+function getAgentList(zipcode, statecode) {
+    var deferred = q.defer();
+    var agentlist;
+    var reqUrl = "https://purchase-stest.allstate.com/onlinesalesapp-common/api/transaction/RENTERS/sessionid";
+    var agentUrl = "https://purchase-stest.allstate.com/onlinesalesapp-common/api/common/agents";
+    request({ method: 'GET', url: reqUrl }, function (error, response, body) {
+        if (error || response.statusCode !== 200) {
+            console.log("Error from server");
+        } else {
+            //session id
+            sessionData = response.headers['x-tid'];
+            request({
+                method: 'POST', url: agentUrl,
+                headers: {
+                    "content-type": "application/json",
+                    "X-SID": sessionData,
+                    "X-ZP": zipcode,
+                    "X-TID": sessionData,
+                    "X-PD": "RENTERS",
+                    "X-ST": statecode
+                },
+                json: true,
+                body: { zipCode: zipcode, street: 'sad' }
+            }, function (error, response, body) {
+                if (error || response.statusCode !== 200) {
+                    console.log("Error from server");
+                } else {
+                    //Agent list
+                    agentlist = body;
+                    deferred.resolve(agentlist);
+                }
+            });
+        }
     });
 
-    module.exports = app;
+    return deferred.promise;
+}
+
+// Start server
+// Webhooks must be available via SSL with a certificate signed by a valid 
+// certificate authority.
+app.listen(app.get('port'), function () {
+    console.log('Node app is running on port', app.get('port'));
+});
+
+module.exports = app;
 
