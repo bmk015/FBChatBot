@@ -256,9 +256,7 @@ function receivedMessage(event) {
         var strArry;
         if (msgTxt.includes('zipcode')) {
             strArry = msgTxt.split(',');
-            msgTxt = "test " + strArry[0].toString()+" " + strArry[1].toString();
             if (strArry.length == 2) {
-                msgTxt = "test len 2 " + strArry[0].toString() + " " + strArry[1].toString();
                 zipcode = strArry[0].toString().split(':')[1];
                 state = strArry[1].toString().split(':')[1];
             }
@@ -305,7 +303,7 @@ function receivedMessage(event) {
                 break;
 
             default:
-                sendTextMessage(senderID, msgTxt );
+                sendTextMessage(senderID, msgTxt);
         }
     } else if (messageAttachments) {
         sendTextMessage(senderID, "Message with attachment received");
