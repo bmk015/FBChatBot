@@ -252,8 +252,13 @@ function receivedMessage(event) {
         // keywords and send back the corresponding example. Otherwise, just echo
         // the text we received.
         var msgTxt = messageText.toLowerCase();
+        var zipcode, state;
+        var strArry ;
         if (msgTxt.includes('zipcode')) {
             msgTxt = 'zipcode';
+            strArry = msgTxt.split(',');
+            zipcode = strArry[0].split(':')[1];
+            state = strArry[1].split(':')[1];
         }
         switch (msgTxt) {
             case 'user_defined_payload':
@@ -288,12 +293,11 @@ function receivedMessage(event) {
                 break;
 
             case 'zipcode':
-                sendAgentFinderWaitMessage(senderID);
-                //sendAgentListMessage(senderID);
+                sendAgentFinderWaitMessage(senderID, zipcode, state);
                 break;
 
             case 'agents':
-                sendAgentListMessage(senderID);
+                sendAgentListMessage(senderID, zipcode, state);
                 break;
 
             default:
@@ -413,7 +417,7 @@ function receivedAccountLink(event) {
       "and auth code %s ", senderID, status, authCode);
 }
 
-function sendAgentFinderWaitMessage(recipientId) {
+function sendAgentFinderWaitMessage(recipientId, zipcode, state) {
     var messageData = {
         recipient: {
             id: recipientId
@@ -423,7 +427,7 @@ function sendAgentFinderWaitMessage(recipientId) {
         }
     };
     callSendAPI(messageData);
-    sendAgentListMessage(recipientId);
+    sendAgentListMessage(recipientId, zipcode, state);
 }
 
 function sendAgentFinderMessage(recipientId) {
@@ -432,7 +436,7 @@ function sendAgentFinderMessage(recipientId) {
             id: recipientId
         },
         message: {
-            text: "Please enter your zip code and statecode, as 'zipcode:78745 state:IL'",
+            text: "Please enter your zip code and statecode, as 'zipcode:78745,state:IL'",
         }
     };
     callSendAPI(messageData);
@@ -661,8 +665,8 @@ function sendAccountLinking(recipientId) {
     callSendAPI(messageData);
 }
 
-function sendAgentListMessage(recipientId) {
-    getAgentList("60660", "IL").then(function (responseObj) {
+function sendAgentListMessage(recipientId, zipcode, state) {
+    getAgentList(zipcode, state).then(function (responseObj) {
     var messageData = {
         recipient: {
             id: recipientId
