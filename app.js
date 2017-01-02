@@ -256,8 +256,10 @@ function receivedMessage(event) {
         var strArry ;
         if (msgTxt.includes('zipcode')) {
             strArry = msgTxt.split(',');
-            zipcode = strArry[0].split(':')[1];
-            state = strArry[1].split(':')[1];
+            if (strArry.lenght == 2) {
+                zipcode = strArry[0].split(':')[1];
+                state = strArry[1].split(':')[1];
+            }
             msgTxt = 'zipcode';
         }
         switch (msgTxt) {
