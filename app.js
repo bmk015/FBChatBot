@@ -663,64 +663,70 @@ function sendAccountLinking(recipientId) {
 
 function sendAgentListMessage(recipientId) {
     getAgentList("60660", "IL").then(function (responseObj) {
-    var messageData = {
-        recipient: {
-            id: recipientId
-        },
-        message: {
-            attachment: {
-                type: "template",
-                payload: {
-                    template_type: "generic",
-                    elements: [{
-                         title: responseObj.agents[0].name,
-                         //title:"Isbella",
-                        subtitle: "Allstate Insurance Company",
-                        item_url: "https://www.allstate.com/",
-                        image_url: SERVER_URL + "/assets/agent2.jpg",
-                        buttons: [{
-                            type: "phone_number",
-                            title: "Call",
-                            payload: responseObj.agents[0].phoneNumber
-                        }, {
-                            type: "postback",
-                            title: "Email",
-                            //payload: "xyz@gmail.com"
-                            payload: responseObj.agents[0].emailAddress
-                        },
-                        {
-                            type: "web_url",
-                            url: "https://www.allstate.com/",
-                            title: "View Agent's Website"
-                        }]
-                    }, {
-                        // title: "Olivia",
-                        title: responseObj.agents[1].name,
-                        subtitle: "Allstate Insurance Company",
-                        item_url: "https://www.allstate.com/auto-insurance.aspx",
-                        image_url: SERVER_URL + "/assets/agent1.png",
-                        buttons: [{
-                            type: "phone_number",
-                            title: "Call",
-                            payload: responseObj.agents[1].phoneNumber
-                        }, {
-                            type: "postback",
-                            title: "Email",
-                            //payload: "xyz@gmail.com"
-                            payload: responseObj.agents[1].emailAddress
-                        },
-                        {
-                            type: "web_url",
-                            url: "https://www.allstate.com/",
-                            title: "View Agent's Website"
-                        }]
-                    }]
-                }
+        //var messageData = {
+        //    recipient: {
+        //        id: recipientId
+        //    },
+        //    message: {
+        //        attachment: {
+        //            type: "template",
+        //            payload: {
+        //                template_type: "generic",
+        //                elements: [{
+        //                     title: responseObj.agents[0].name,
+        //                     //title:"Isbella",
+        //                    subtitle: "Allstate Insurance Company",
+        //                    item_url: "https://www.allstate.com/",
+        //                    image_url: SERVER_URL + "/assets/agent2.jpg",
+        //                    buttons: [{
+        //                        type: "phone_number",
+        //                        title: "Call",
+        //                        payload: "+16505551234"
+        //                    }, {
+        //                        type: "postback",
+        //                        title: "Email",
+        //                        payload: "xyz@gmail.com",
+        //                    },
+        //                    {
+        //                        type: "web_url",
+        //                        url: "https://www.allstate.com/",
+        //                        title: "View Agent's Website"
+        //                    }]
+        //                }, {
+        //                    title: "Olivia",
+        //                    subtitle: "Allstate Insurance Company",
+        //                    item_url: "https://www.allstate.com/auto-insurance.aspx",
+        //                    image_url: SERVER_URL + "/assets/agent1.png",
+        //                    buttons: [{
+        //                        type: "phone_number",
+        //                        title: "Call",
+        //                        payload: "+16505551234"
+        //                    }, {
+        //                        type: "postback",
+        //                        title: "Email",
+        //                        payload: "xyz@gmail.com",
+        //                    },
+        //                    {
+        //                        type: "web_url",
+        //                        url: "https://www.allstate.com/",
+        //                        title: "View Agent's Website"
+        //                    }]
+        //                }]
+        //            }
+        //        }
+        //    }
+        //};
+        var messageData = {
+            recipient: {
+                id: recipientId
+            },
+            message: {
+                text: "responseObj",
+                metadata: "DEVELOPER_DEFINED_METADATA"
             }
-        }
-    };
-    callSendAPI(messageData);
-      });
+        };
+        callSendAPI(messageData);
+    });
 
 }
 
@@ -756,9 +762,9 @@ function callSendAPI(messageData) {
 
 function getAgentList(zipcode, statecode) {
     var deferred = q.defer();
+    var sessionData;
     var errormsg;
     var agentlist;
-    var sessionData;
     var reqUrl = "https://purchase-stest.allstate.com/onlinesalesapp-common/api/transaction/RENTERS/sessionid";
     var agentUrl = "https://purchase-stest.allstate.com/onlinesalesapp-common/api/common/agents";
     request({ method: 'GET', url: reqUrl }, function (error, response, body) {
@@ -769,29 +775,7 @@ function getAgentList(zipcode, statecode) {
         } else {
             //session id
             sessionData = response.headers['x-tid'];
-            request({
-                method: 'POST', url: agentUrl,
-                headers: {
-                    "content-type": "application/json",
-                    "X-SID": sessionData,
-                    "X-ZP": zipcode,
-                    "X-TID": sessionData,
-                    "X-PD": "RENTERS",
-                    "X-ST": statecode
-                },
-                json: true,
-                body: { zipCode: zipcode, street: 'sad' }
-            }, function (error, response, body) {
-                if (error || response.statusCode !== 200) {
-                    errormsg = "Error from server gent";
-                    console.log("Error from server");
-                    deferred.resolve(errormsg);
-                } else {
-                    //Agent list
-                    agentlist = body;
-                    deferred.resolve(agentlist);
-                }
-            });
+            deferred.resolve(sessionData);
         }
     });
 
