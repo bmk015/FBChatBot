@@ -683,7 +683,7 @@ function sendAgentListMessage(recipientId, zipcode, state) {
                          //title:"Isbella",
                         subtitle: "Allstate Insurance Company",
                         item_url: "https://www.allstate.com/",
-                        image_url: responseObj.agents[0].imageURL,
+                        image_url: responseObj.agents[0].imageURL || SERVER_URL + "/assets/agent2.jpg",
                         //image_url: SERVER_URL + "/assets/agent2.jpg",
                         buttons: [{
                             type: "phone_number",
@@ -706,7 +706,7 @@ function sendAgentListMessage(recipientId, zipcode, state) {
                         title: responseObj.agents[1].name,
                         subtitle: "Allstate Insurance Company",
                         item_url: "https://www.allstate.com/auto-insurance.aspx",
-                        image_url: responseObj.agents[1].imageURL,
+                        image_url: responseObj.agents[1].imageURL || SERVER_URL + "/assets/agent1.png",
                         //image_url: SERVER_URL + "/assets/agent1.png",
                         buttons: [{
                             type: "phone_number",
