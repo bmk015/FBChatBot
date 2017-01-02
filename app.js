@@ -255,11 +255,11 @@ function receivedMessage(event) {
         var zipcode = "60660", state = "IL";
         var strArry;
         if (msgTxt.includes('zipcode')) {
-            strArry = msgTxt.split(',');
+            strArry = msgTxt.split(",");
             msgTxt = "test" + strArry.lenght;
             if (strArry.lenght == 2) {
-                zipcode = strArry[0].split(':')[1];
-                state = strArry[1].split(':')[1];
+                zipcode = strArry[0].split(":")[1];
+                state = strArry[1].split(":")[1];
             }
             //msgTxt = 'zipcode';
         }
