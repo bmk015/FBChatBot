@@ -12,7 +12,7 @@ const
   crypto = require('crypto'),
   express = require('express'),
   https = require('https'),
-  request = require('request');
+  request = require('request'),
   q = require('q');
 
 var app = express();
