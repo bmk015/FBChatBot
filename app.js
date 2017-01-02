@@ -770,6 +770,7 @@ function getAgentList(zipcode, statecode) {
         if (error || response.statusCode !== 200) {
             console.log("Error from server");
             errormsg = "Error from server session";
+            deferred.resolve(errormsg);
         } else {
             //session id
             sessionData = response.headers['x-tid'];
