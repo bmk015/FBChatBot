@@ -721,7 +721,7 @@ function sendAgentListMessage(recipientId) {
                 id: recipientId
             },
             message: {
-                text: responseObj.agents[0].name,
+                text: "success" + responseObj,
                 metadata: "DEVELOPER_DEFINED_METADATA"
             }
         };
@@ -762,12 +762,14 @@ function callSendAPI(messageData) {
 
 function getAgentList(zipcode, statecode) {
     var deferred = q.defer();
+    var errormsg;
     var agentlist;
     var reqUrl = "https://purchase-stest.allstate.com/onlinesalesapp-common/api/transaction/RENTERS/sessionid";
     var agentUrl = "https://purchase-stest.allstate.com/onlinesalesapp-common/api/common/agents";
     request({ method: 'GET', url: reqUrl }, function (error, response, body) {
         if (error || response.statusCode !== 200) {
             console.log("Error from server");
+            errormsg = "Error from server session";
         } else {
             //session id
             sessionData = response.headers['x-tid'];
@@ -785,7 +787,9 @@ function getAgentList(zipcode, statecode) {
                 body: { zipCode: zipcode, street: 'sad' }
             }, function (error, response, body) {
                 if (error || response.statusCode !== 200) {
+                    errormsg = "Error from server gent";
                     console.log("Error from server");
+                    deferred.resolve(errormsg);
                 } else {
                     //Agent list
                     agentlist = body;
