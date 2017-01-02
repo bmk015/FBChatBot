@@ -662,7 +662,7 @@ function sendAccountLinking(recipientId) {
 }
 
 function sendAgentListMessage(recipientId) {
-   // getAgentList("60660", "IL").then(function (responseObj) {
+   getAgentList("60660", "IL").then(function (responseObj) {
         var messageData = {
             recipient: {
                 id: recipientId
@@ -673,8 +673,8 @@ function sendAgentListMessage(recipientId) {
                     payload: {
                         template_type: "generic",
                         elements: [{
-                            // title: responseObj.agents[0].name,
-                            title:"Isbella",
+                            title: responseObj.agents[0].name,
+                           // title:"Isbella",
                             subtitle: "Allstate Insurance Company",
                             item_url: "https://www.allstate.com/",
                             image_url: SERVER_URL + "/assets/agent2.jpg",
@@ -718,7 +718,7 @@ function sendAgentListMessage(recipientId) {
         };
 
         callSendAPI(messageData);
-   // });
+    });
 
 }
 
