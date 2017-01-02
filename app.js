@@ -673,8 +673,8 @@ function sendAgentListMessage(recipientId) {
                 payload: {
                     template_type: "generic",
                     elements: [{
-                         //title: responseObj.agents[0].name,
-                         title:"Isbella",
+                         title: responseObj.agents[0].name,
+                         //title:"Isbella",
                         subtitle: "Allstate Insurance Company",
                         item_url: "https://www.allstate.com/",
                         image_url: SERVER_URL + "/assets/agent2.jpg",
