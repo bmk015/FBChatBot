@@ -662,7 +662,7 @@ function sendAccountLinking(recipientId) {
 }
 
 function sendAgentListMessage(recipientId) {
-    //getAgentList("60660", "IL").then(function (responseObj) {
+    getAgentList("60660", "IL").then(function (responseObj) {
     var messageData = {
         recipient: {
             id: recipientId
@@ -718,7 +718,7 @@ function sendAgentListMessage(recipientId) {
     };
 
     callSendAPI(messageData);
-    //  });
+      });
 
 }
 
