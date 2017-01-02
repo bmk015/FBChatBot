@@ -255,10 +255,10 @@ function receivedMessage(event) {
         var zipcode, state;
         var strArry ;
         if (msgTxt.includes('zipcode')) {
-            msgTxt = 'zipcode';
             strArry = msgTxt.split(',');
             zipcode = strArry[0].split(':')[1];
             state = strArry[1].split(':')[1];
+            msgTxt = 'zipcode';
         }
         switch (msgTxt) {
             case 'user_defined_payload':
