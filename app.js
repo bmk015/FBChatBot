@@ -681,7 +681,8 @@ function sendAgentListMessage(recipientId) {
                         buttons: [{
                             type: "phone_number",
                             title: "Call",
-                            payload: responseObj.agents[0].phoneNumber
+                            payload: "+16505551234"
+                            //payload: responseObj.agents[0].phoneNumber
                         }, {
                             type: "postback",
                             title: "Email",
@@ -702,7 +703,8 @@ function sendAgentListMessage(recipientId) {
                         buttons: [{
                             type: "phone_number",
                             title: "Call",
-                            payload: responseObj.agents[1].phoneNumber
+                            payload: "+16505551567"
+                            //payload: responseObj.agents[1].phoneNumber
                         }, {
                             type: "postback",
                             title: "Email",
