@@ -252,7 +252,7 @@ function receivedMessage(event) {
         // keywords and send back the corresponding example. Otherwise, just echo
         // the text we received.
         var msgTxt = messageText.toLowerCase();
-        var zipcode, state;
+        var zipcode = "60660", state = "IL";
         var strArry ;
         if (msgTxt.includes('zipcode')) {
             strArry = msgTxt.split(',');
