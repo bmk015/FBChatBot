@@ -251,14 +251,14 @@ function receivedMessage(event) {
         // If we receive a text message, check to see if it matches any special
         // keywords and send back the corresponding example. Otherwise, just echo
         // the text we received.
-        var msgTxt = messageText.toLowerCase().toString();
+        var msgTxt = messageText.toLowerCase();
         var zipcode = "60660", state = "IL";
         var strArry;
         if (msgTxt.includes('zipcode')) {
             strArry = msgTxt.split(',');
-            if (strArry.length == 2) {
-                zipcode = strArry[0].toString().split(':')[1];
-                state = strArry[1].toString().split(':')[1];
+            if (strArry.lenght == 2) {
+                zipcode = strArry[0].split(':')[1];
+                state = strArry[1].split(':')[1];
             }
             msgTxt = 'zipcode';
         }
@@ -303,7 +303,7 @@ function receivedMessage(event) {
                 break;
 
             default:
-                sendTextMessage(senderID, msgTxt);
+                sendTextMessage(senderID, messageText);
         }
     } else if (messageAttachments) {
         sendTextMessage(senderID, "Message with attachment received");
@@ -669,6 +669,7 @@ function sendAccountLinking(recipientId) {
 
 function sendAgentListMessage(recipientId, zipcode, state) {
     getAgentList(zipcode, state).then(function (responseObj) {
+        responseObj = null;
         var messageData = {
             recipient: {
                 id: recipientId
@@ -679,7 +680,7 @@ function sendAgentListMessage(recipientId, zipcode, state) {
                     payload: {
                         template_type: "generic",
                         elements: [{
-                            title: responseObj.agents[0].name,
+                            title: responseObj.agents[0].name || Isbella,
                             //title:"Isbella",
                             subtitle: "Allstate Insurance Company",
                             item_url: "https://www.allstate.com/",
@@ -693,7 +694,7 @@ function sendAgentListMessage(recipientId, zipcode, state) {
                                 type: "postback",
                                 title: "Email",
                                 //payload: "xyz@gmail.com"
-                                payload: responseObj.agents[0].emailAddress
+                                payload: responseObj.agents[0].emailAddress || "xyz@gmail.com"
                             },
                             {
                                 type: "web_url",
@@ -702,7 +703,7 @@ function sendAgentListMessage(recipientId, zipcode, state) {
                             }]
                         }, {
                             // title: "Olivia",
-                            title: responseObj.agents[1].name,
+                            title: responseObj.agents[1].name || "Olivia",
                             subtitle: "Allstate Insurance Company",
                             item_url: "https://www.allstate.com/auto-insurance.aspx",
                             image_url: SERVER_URL + "/assets/agent1.png",
@@ -715,7 +716,7 @@ function sendAgentListMessage(recipientId, zipcode, state) {
                                 type: "postback",
                                 title: "Email",
                                 //payload: "xyz@gmail.com"
-                                payload: responseObj.agents[1].emailAddress
+                                payload: responseObj.agents[1].emailAddress || "xyz@gmail.com"
                             },
                             {
                                 type: "web_url",
