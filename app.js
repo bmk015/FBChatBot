@@ -762,6 +762,7 @@ function callSendAPI(messageData) {
 
 function getAgentList(zipcode, statecode) {
     var deferred = q.defer();
+    var sessionData;
     var errormsg;
     var agentlist;
     var reqUrl = "https://purchase-stest.allstate.com/onlinesalesapp-common/api/transaction/RENTERS/sessionid";
