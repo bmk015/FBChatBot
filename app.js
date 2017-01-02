@@ -257,12 +257,12 @@ function receivedMessage(event) {
         if (msgTxt.includes('zipcode')) {
             strArry = msgTxt.split(',');
             msgTxt = "test " + strArry[0].toString()+" " + strArry[1].toString();
-            if (strArry.lenght == 2) {
+            if (strArry.length == 2) {
                 msgTxt = "test len 2 " + strArry[0].toString() + " " + strArry[1].toString();
                 zipcode = strArry[0].toString().split(':')[1];
                 state = strArry[1].toString().split(':')[1];
             }
-            //msgTxt = 'zipcode';
+            msgTxt = 'zipcode';
         }
         switch (msgTxt) {
             case 'user_defined_payload':
