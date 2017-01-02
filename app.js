@@ -724,7 +724,7 @@ function sendAgentListMessage(recipientId) {
                 id: recipientId
             },
             message: {
-                text: responseObj,
+                text: responseObj.agents[0].name,
                 metadata: "DEVELOPER_DEFINED_METADATA"
             }
         }
