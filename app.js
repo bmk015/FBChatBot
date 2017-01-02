@@ -663,73 +663,64 @@ function sendAccountLinking(recipientId) {
 
 function sendAgentListMessage(recipientId) {
     getAgentList("60660", "IL").then(function (responseObj) {
-        //var messageData = {
-        //    recipient: {
-        //        id: recipientId
-        //    },
-        //    message: {
-        //        attachment: {
-        //            type: "template",
-        //            payload: {
-        //                template_type: "generic",
-        //                elements: [{
-        //                    title: responseObj.agents[0].name,
-        //                    //title:"Isbella",
-        //                    subtitle: "Allstate Insurance Company",
-        //                    item_url: "https://www.allstate.com/",
-        //                    image_url: SERVER_URL + "/assets/agent2.jpg",
-        //                    buttons: [{
-        //                        type: "phone_number",
-        //                        title: "Call",
-        //                        payload: responseObj.agents[0].phoneNumber
-        //                    }, {
-        //                        type: "postback",
-        //                        title: "Email",
-        //                        //payload: "xyz@gmail.com"
-        //                        payload: responseObj.agents[0].emailAddress
-        //                    },
-        //                    {
-        //                        type: "web_url",
-        //                        url: "https://www.allstate.com/",
-        //                        title: "View Agent's Website"
-        //                    }]
-        //                }, {
-        //                    // title: "Olivia",
-        //                    title: responseObj.agents[1].name,
-        //                    subtitle: "Allstate Insurance Company",
-        //                    item_url: "https://www.allstate.com/auto-insurance.aspx",
-        //                    image_url: SERVER_URL + "/assets/agent1.png",
-        //                    buttons: [{
-        //                        type: "phone_number",
-        //                        title: "Call",
-        //                        payload: responseObj.agents[1].phoneNumber
-        //                    }, {
-        //                        type: "postback",
-        //                        title: "Email",
-        //                        //payload: "xyz@gmail.com"
-        //                        payload: responseObj.agents[1].emailAddress
-        //                    },
-        //                    {
-        //                        type: "web_url",
-        //                        url: "https://www.allstate.com/",
-        //                        title: "View Agent's Website"
-        //                    }]
-        //                }]
-        //            }
-        //        }
-        //    }
-        //};
-        var messageData = {
-            recipient: {
-                id: recipientId
-            },
-            message: {
-                text: responseObj.agents[0].name,
-                metadata: "DEVELOPER_DEFINED_METADATA"
+    var messageData = {
+        recipient: {
+            id: recipientId
+        },
+        message: {
+            attachment: {
+                type: "template",
+                payload: {
+                    template_type: "generic",
+                    elements: [{
+                        title: responseObj.agents[0].name,
+                         //title:"Isbella",
+                        subtitle: "Allstate Insurance Company",
+                        item_url: "https://www.allstate.com/",
+                        image_url: SERVER_URL + "/assets/agent2.jpg",
+                        buttons: [{
+                            type: "phone_number",
+                            title: "Call",
+                            payload: responseObj.agents[0].phoneNumber
+                        }, {
+                            type: "postback",
+                            title: "Email",
+                            //payload: "xyz@gmail.com"
+                            payload: responseObj.agents[0].emailAddress
+                        },
+                        {
+                            type: "web_url",
+                            url: "https://www.allstate.com/",
+                            title: "View Agent's Website"
+                        }]
+                    }, {
+                        // title: "Olivia",
+                        title: responseObj.agents[1].name,
+                        subtitle: "Allstate Insurance Company",
+                        item_url: "https://www.allstate.com/auto-insurance.aspx",
+                        image_url: SERVER_URL + "/assets/agent1.png",
+                        buttons: [{
+                            type: "phone_number",
+                            title: "Call",
+                            payload: responseObj.agents[1].phoneNumber
+                        }, {
+                            type: "postback",
+                            title: "Email",
+                            //payload: "xyz@gmail.com"
+                            payload: responseObj.agents[1].emailAddress
+                        },
+                        {
+                            type: "web_url",
+                            url: "https://www.allstate.com/",
+                            title: "View Agent's Website"
+                        }]
+                    }]
+                }
             }
         }
-        callSendAPI(messageData);
-    });
+    };
+    callSendAPI(messageData);
+      });
 
 }
 
