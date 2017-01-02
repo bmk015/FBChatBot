@@ -251,15 +251,15 @@ function receivedMessage(event) {
         // If we receive a text message, check to see if it matches any special
         // keywords and send back the corresponding example. Otherwise, just echo
         // the text we received.
-        var msgTxt = messageText.toLowerCase();
+        var msgTxt = messageText.toLowerCase().toString();
         var zipcode = "60660", state = "IL";
         var strArry;
         if (msgTxt.includes('zipcode')) {
-            strArry = msgTxt.toString().split(",");
+            strArry = msgTxt.split(',');
             msgTxt = "test" + strArry.lenght;
             if (strArry.lenght == 2) {
-                zipcode = strArry[0].toString().split(":")[1];
-                state = strArry[1].toString().split(":")[1];
+                zipcode = strArry[0].toString().split(':')[1];
+                state = strArry[1].toString().split(':')[1];
             }
             //msgTxt = 'zipcode';
         }
