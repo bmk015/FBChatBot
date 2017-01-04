@@ -267,6 +267,18 @@ function receivedMessage(event) {
         if (msgTxt.includes('agent')) {
             msgTxt = 'agent';
         }
+        //quote keyword
+        if (msgTxt.includes('quote')) {
+            msgTxt = 'quote';
+        }
+        //Renter keyword
+        if (msgTxt.includes('quote')) {
+            msgTxt = 'renter';
+        }
+        //address keyword
+        if (msgTxt.includes('address')) {
+            msgTxt = 'address';
+        }
         switch (msgTxt) {
             case 'user_defined_payload':
             case 'hi':
@@ -307,6 +319,22 @@ function receivedMessage(event) {
                 sendAgentListMessage(senderID, zipcode, state);
                 break;
 
+            case 'quote':
+                sendQuoteHelpMessage(senderID);
+                break;
+
+            case 'renter':
+                sendRenterQuoteHelpMessage(senderID);
+                break;
+
+            case 'address':
+                sendPropertyTypeMessage(senderID);
+                break;
+
+            case 'amount':
+                sendQuoteResponseMessage(senderID);
+                break;
+                
             default:
                 sendTextMessage(senderID, messageText);
         }
@@ -380,6 +408,21 @@ function receivedPostback(event) {
             sendAgentFinderMessage(senderID);
             break;
 
+        case 'ContactInfoCorrect':
+            sendContactInfoCorrectMessage(senderID);
+            break;
+
+        case 'ContactInfoIncorrect':
+            sendContactInfoIncorrectMessage(senderID);
+            break;
+
+        case 'home':
+        case 'apartment':
+        case 'Dorm':
+        case 'condo':
+            sendPropertySelectMessage(senderID);
+            break;
+
         default:
             sendTextMessage(senderID, payload);
     }
@@ -449,6 +492,68 @@ function sendAgentFinderMessage(recipientId) {
     callSendAPI(messageData);
 }
 
+function sendPropertySelectMessage(recipientId) {
+    var messageData = {
+        recipient: {
+            id: recipientId
+        },
+        message: {
+            text: "Please enter the amount would you like to insure the content for, example Amount: $6000 ",
+        }
+    };
+    callSendAPI(messageData);
+}
+
+function sendQuoteResponseMessage(recipientId) {
+    var messageData = {
+        recipient: {
+            id: recipientId
+        },
+        message: {
+            text: "Great, thanks for all the info!, Give me just a moment to give your quote",
+        }
+    };
+    sendQuoteMessage(recipientId);
+    callSendAPI(messageData);
+}
+
+
+function sendQuoteMessage(recipientId) {
+    var messageData = {
+        recipient: {
+            id: recipientId
+        },
+        message: {
+            attachment: {
+                type: "template",
+                payload: {
+                    template_type: "generic",
+                    elements: [
+                       {
+                           title: "Renter Insurance Quote",
+                           subtitle: "$19.30/Monthly \n\r $6000 Coverage",
+                           image_url: SERVER_URL + "/assets/allstate_026_1_b_blue_large.jpg",
+                           buttons: [
+                             {
+                                 type: "postback",
+                                 title: "Sent to Agent",
+                                 payload: "Sent to agent"
+                            }, {
+                                    type: "postback",
+                                    title: "Purchase",
+                                    payload: "Purchase"
+                                }
+                           ]
+                       }
+                    ]
+                }
+            }
+        }
+    };
+
+    callSendAPI(messageData);
+}
+
 function sendGetLiveHelpMessage(recipientId) {
     var messageData = {
         recipient: {
@@ -509,7 +614,125 @@ function sendGotItMessage(recipientId) {
     callSendAPI(messageData);
 }
 
+function sendQuoteHelpMessage(recipientId) {
+    var messageData = {
+        recipient: {
+            id: recipientId
+        },
+        message: {
+            text: "Okay! Which product do you want a quote for",
+            metadata: "DEVELOPER_DEFINED_METADATA"
+        }
+    };
 
+    callSendAPI(messageData);
+}
+
+function sendRenterQuoteHelpMessage(recipientId) {
+    var messageData = {
+        recipient: {
+            id: recipientId
+        },
+        message: {
+            text: "starting your quote ",
+            metadata: "DEVELOPER_DEFINED_METADATA"
+        }
+    };
+    callSendAPI(messageData);
+    sendContactInfoMessage(recipientId);
+    sendContactConfirmMessage(recipientId);
+}
+
+function sendContactInfoMessage(recipientId) {
+    var messageData = {
+        recipient: {
+            id: recipientId
+        },
+        message: {
+            text: "Contact Info \n\r Name: Bharath Kashinath",
+            metadata: "DEVELOPER_DEFINED_METADATA"
+        }
+    };
+    callSendAPI(messageData);
+}
+
+function sendPropertyTypeMessage(recipientId) {
+    var messageData = {
+        recipient: {
+            id: recipientId
+        },
+        message: {
+            attachment: {
+                type: "template",
+                payload: {
+                    template_type: "button",
+                    text: "What type of property is it?'",
+                    buttons: [{
+                        type: "postback",
+                        title: "House",
+                        payload: "House"
+                    }, {
+                        type: "postback",
+                        title: "Apartment",
+                        payload: "Apartment"
+                    }, {
+                        type: "postback",
+                        title: "Dorm",
+                        payload: "Dorm"
+                    }, {
+                        type: "postback",
+                        title: "Condo",
+                        payload: "Condo"
+                    }
+                    ]
+                }
+            }
+        }
+    };
+    callSendAPI(messageData);
+}
+function sendContactConfirmMessage(recipientId) {
+    var messageData = {
+        recipient: {
+            id: recipientId
+        },
+        message: {
+            attachment: {
+                type: "template",
+                payload: {
+                    template_type: "button",
+                    text: "is this Information is accurate?",
+                    buttons: [
+                       {
+                           type: "postback",
+                           title: "Nope",
+                           payload: "ContactInfoIncorrect"
+                       },
+                        {
+                            type: "postback",
+                            title: "Yes",
+                            payload: "ContactInfoCorrect"
+                        }
+                    ]
+                }
+            }
+        }
+    }
+    callSendAPI(messageData);
+}
+
+function sendContactInfoCorrectMessage(recipientId) {
+    var messageData = {
+        recipient: {
+            id: recipientId
+        },
+        message: {
+            text: "OK, great now I need some info on where you currently live \n Please enter your current primary residence address",
+            metadata: "DEVELOPER_DEFINED_METADATA"
+        }
+    };
+    callSendAPI(messageData);
+}
 /*
  * Send a text message using the Send API.
  *
