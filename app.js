@@ -408,17 +408,17 @@ function receivedPostback(event) {
             sendAgentFinderMessage(senderID);
             break;
 
-        case 'ContactInfoCorrect':
+        case 'contactinfocorrect':
             sendContactInfoCorrectMessage(senderID);
             break;
 
-        case 'ContactInfoIncorrect':
+        case 'contactinfoincorrect':
             sendContactInfoIncorrectMessage(senderID);
             break;
 
         case 'home':
         case 'apartment':
-        case 'Dorm':
+        case 'dorm':
         case 'condo':
             sendPropertySelectMessage(senderID);
             break;
