@@ -540,8 +540,8 @@ function sendQuoteMessage(recipientId) {
                            buttons: [
                              {
                                  type: "postback",
-                                 title: "Sent to Agent",
-                                 payload: "Sent to agent"
+                                 title: "Send to Agent",
+                                 payload: "Send to agent"
                              }, {
                                  type: "postback",
                                  title: "Purchase",
