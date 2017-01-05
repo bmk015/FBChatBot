@@ -282,9 +282,9 @@ function receivedMessage(event) {
         }
         //amount keyword
         if (msgTxt.includes('amount')) {
-          var  amtArry = msgTxt.split(':');
-          if (amtArry.length == 2) {
-              amt = amtArry[1];
+            var amtArry = msgTxt.split(':');
+            if (amtArry.length == 2) {
+                amt = amtArry[1];
             }
             msgTxt = 'amount';
         }
@@ -522,10 +522,40 @@ function sendQuoteResponseMessage(recipientId, amount) {
             text: "Great, thanks for all the info!, Give me just a moment to give your quote",
         }
     };
-    sendQuoteMessage(recipientId,amount);
+    sendTypingOn(recipientId);
+    sendTypingOff(recipientId);
+    sendQuoteMessage(recipientId, amount);
+    callSendAPI(messageData);
+}
+function sendTypingOn(recipientId) {
+    console.log("Turning typing indicator on");
+
+    var messageData = {
+        recipient: {
+            id: recipientId
+        },
+        sender_action: "typing_on"
+    };
+
     callSendAPI(messageData);
 }
 
+/*
+ * Turn typing indicator off
+ *
+ */
+function sendTypingOff(recipientId) {
+    console.log("Turning typing indicator off");
+
+    var messageData = {
+        recipient: {
+            id: recipientId
+        },
+        sender_action: "typing_off"
+    };
+
+    callSendAPI(messageData);
+}
 
 function sendQuoteMessage(recipientId, amount) {
     var pr = .00333 * amount;
@@ -541,7 +571,7 @@ function sendQuoteMessage(recipientId, amount) {
                     elements: [
                        {
                            title: "Renter Insurance Quote",
-                           subtitle: "$"+pr+"/Monthly \n\r $" + amount + " Coverage",
+                           subtitle: "$" + pr + "/Monthly \n\r $" + amount + " Coverage",
                            image_url: SERVER_URL + "/assets/allstate_026_1_b_blue_large.jpg",
                            buttons: [
                              {
