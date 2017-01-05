@@ -282,9 +282,9 @@ function receivedMessage(event) {
         }
         //amount keyword
         if (msgTxt.includes('amount')) {
-          var  amtArry = msgTxt.split(',');
+          var  amtArry = msgTxt.split(':');
           if (amtArry.length == 2) {
-              amt = strArry[1];
+              amt = amtArry[1];
             }
             msgTxt = 'amount';
         }
