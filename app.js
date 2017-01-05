@@ -334,7 +334,7 @@ function receivedMessage(event) {
             case 'amount':
                 sendQuoteResponseMessage(senderID);
                 break;
-                
+
             default:
                 sendTextMessage(senderID, messageText);
         }
@@ -538,11 +538,11 @@ function sendQuoteMessage(recipientId) {
                                  type: "postback",
                                  title: "Sent to Agent",
                                  payload: "Sent to agent"
-                            }, {
-                                    type: "postback",
-                                    title: "Purchase",
-                                    payload: "Purchase"
-                                }
+                             }, {
+                                 type: "postback",
+                                 title: "Purchase",
+                                 payload: "Purchase"
+                             }
                            ]
                        }
                     ]
@@ -666,7 +666,7 @@ function sendPropertyTypeMessage(recipientId) {
                 type: "template",
                 payload: {
                     template_type: "button",
-                    text: "What type of property is it?'",
+                    text: "What type of property is it?",
                     buttons: [{
                         type: "postback",
                         title: "House",
@@ -679,10 +679,6 @@ function sendPropertyTypeMessage(recipientId) {
                         type: "postback",
                         title: "Dorm",
                         payload: "Dorm"
-                    }, {
-                        type: "postback",
-                        title: "Condo",
-                        payload: "Condo"
                     }
                     ]
                 }
