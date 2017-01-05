@@ -523,7 +523,7 @@ function sendQuoteResponseMessage(recipientId, amount) {
         }
     };
     sendTypingOn(recipientId);
-    wait(4000);
+    wait(10000);
     sendQuoteMessage(recipientId, amount);
     callSendAPI(messageData);
 }
