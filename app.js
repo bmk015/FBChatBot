@@ -522,10 +522,11 @@ function sendQuoteResponseMessage(recipientId, amount) {
             text: "Great, thanks for all the info!, Give me just a moment to give your quote",
         }
     };
-    sendTypingOn(recipientId);
-    wait(50000);
-    sendQuoteMessage(recipientId, amount);
     callSendAPI(messageData);
+    sendTypingOn(recipientId);
+    wait(5000);
+    sendQuoteMessage(recipientId, amount);
+   
 }
 
 function wait(ms) {
