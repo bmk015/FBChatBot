@@ -253,6 +253,7 @@ function receivedMessage(event) {
         // the text we received.
         var msgTxt = messageText.toString().toLowerCase();
         var zipcode = "60660", state = "IL";
+        var amt = 6000;
         var strArry;
         //zipcode
         if (msgTxt.includes('zipcode')) {
@@ -281,6 +282,10 @@ function receivedMessage(event) {
         }
         //amount keyword
         if (msgTxt.includes('amount')) {
+          var  amtArry = msgTxt.split(',');
+          if (amtArry.length == 2) {
+              amt = strArry[1];
+            }
             msgTxt = 'amount';
         }
         switch (msgTxt) {
@@ -336,7 +341,7 @@ function receivedMessage(event) {
                 break;
 
             case 'amount':
-                sendQuoteResponseMessage(senderID);
+                sendQuoteResponseMessage(senderID, amt);
                 break;
 
             default:
@@ -502,13 +507,13 @@ function sendPropertySelectMessage(recipientId) {
             id: recipientId
         },
         message: {
-            text: "Please enter the amount would you like to insure the content for, example Amount: $6000 ",
+            text: "Please enter the amount would you like to insure the content for, example Amount: 6000 ",
         }
     };
     callSendAPI(messageData);
 }
 
-function sendQuoteResponseMessage(recipientId) {
+function sendQuoteResponseMessage(recipientId, amount) {
     var messageData = {
         recipient: {
             id: recipientId
@@ -517,12 +522,13 @@ function sendQuoteResponseMessage(recipientId) {
             text: "Great, thanks for all the info!, Give me just a moment to give your quote",
         }
     };
-    sendQuoteMessage(recipientId);
+    sendQuoteMessage(recipientId,amount);
     callSendAPI(messageData);
 }
 
 
-function sendQuoteMessage(recipientId) {
+function sendQuoteMessage(recipientId, amount) {
+    var pr = .00333 * amount;
     var messageData = {
         recipient: {
             id: recipientId
@@ -535,7 +541,7 @@ function sendQuoteMessage(recipientId) {
                     elements: [
                        {
                            title: "Renter Insurance Quote",
-                           subtitle: "$19.30/Monthly \n\r $6000 Coverage",
+                           subtitle: "$"+pr+"/Monthly \n\r $" + amount + " Coverage",
                            image_url: SERVER_URL + "/assets/allstate_026_1_b_blue_large.jpg",
                            buttons: [
                              {
