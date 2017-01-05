@@ -527,6 +527,15 @@ function sendQuoteResponseMessage(recipientId, amount) {
     sendQuoteMessage(recipientId, amount);
     callSendAPI(messageData);
 }
+
+function wait(ms) {
+    var start = new Date().getTime();
+    var end = start;
+    while (end < start + ms) {
+        end = new Date().getTime();
+    }
+}
+
 function sendTypingOn(recipientId) {
     console.log("Turning typing indicator on");
 
