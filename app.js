@@ -519,7 +519,7 @@ function sendQuoteResponseMessage(recipientId, amount) {
             id: recipientId
         },
         message: {
-            text: "Great, thanks for all the info!, Give me just a moment to give your quote",
+            text: "Great, thanks for all the info!",
         }
     };
     callSendAPI(messageData);
