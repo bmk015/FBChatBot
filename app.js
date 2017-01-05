@@ -279,6 +279,10 @@ function receivedMessage(event) {
         if (msgTxt.includes('address')) {
             msgTxt = 'address';
         }
+        //amount keyword
+        if (msgTxt.includes('amount')) {
+            msgTxt = 'amount';
+        }
         switch (msgTxt) {
             case 'user_defined_payload':
             case 'hi':
@@ -416,7 +420,7 @@ function receivedPostback(event) {
             sendContactInfoIncorrectMessage(senderID);
             break;
 
-        case 'home':
+        case 'house':
         case 'apartment':
         case 'dorm':
         case 'condo':
