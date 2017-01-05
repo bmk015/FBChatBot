@@ -523,7 +523,7 @@ function sendQuoteResponseMessage(recipientId, amount) {
         }
     };
     sendTypingOn(recipientId);
-    sendTypingOff(recipientId);
+    wait(4000);
     sendQuoteMessage(recipientId, amount);
     callSendAPI(messageData);
 }
@@ -540,22 +540,6 @@ function sendTypingOn(recipientId) {
     callSendAPI(messageData);
 }
 
-/*
- * Turn typing indicator off
- *
- */
-function sendTypingOff(recipientId) {
-    console.log("Turning typing indicator off");
-
-    var messageData = {
-        recipient: {
-            id: recipientId
-        },
-        sender_action: "typing_off"
-    };
-
-    callSendAPI(messageData);
-}
 
 function sendQuoteMessage(recipientId, amount) {
     var pr = .00333 * amount;
