@@ -273,7 +273,7 @@ function receivedMessage(event) {
             msgTxt = 'quote';
         }
         //Renter keyword
-        if (msgTxt.includes('quote')) {
+        if (msgTxt.includes('renter')) {
             msgTxt = 'renter';
         }
         //address keyword
@@ -525,7 +525,7 @@ function sendQuoteResponseMessage(recipientId, amount) {
     callSendAPI(messageData);
     sendTypingOn(recipientId);
     sendQuoteMessage(recipientId, amount);
-   
+
 }
 
 
