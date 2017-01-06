@@ -334,6 +334,8 @@ function receivedMessage(event) {
 
             case 'renter':
                 sendRenterQuoteHelpMessage(senderID);
+                sendContactInfoMessage(senderID);
+                sendContactConfirmMessage(senderID);
                 break;
 
             case 'address':
@@ -665,8 +667,7 @@ function sendRenterQuoteHelpMessage(recipientId) {
         }
     };
     callSendAPI(messageData);
-    sendContactInfoMessage(recipientId);
-    sendContactConfirmMessage(recipientId);
+
 }
 
 function sendContactInfoMessage(recipientId) {
