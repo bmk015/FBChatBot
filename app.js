@@ -1020,8 +1020,8 @@ function getAgentList(zipcode, statecode) {
     var errormsg;
     var agentlist;
     var sessionData;
-    var reqUrl = "https://purchase-stest.allstate.com/onlinesalesapp-common/api/transaction/RENTERS/sessionid";
-    var agentUrl = "https://purchase-stest.allstate.com/onlinesalesapp-common/api/common/agents";
+    var reqUrl = "https://purchase-itest1.allstate.com/onlinesalesapp-common/api/transaction/RENTERS/sessionid";
+    var agentUrl = "https://purchase-itest1.allstate.com/onlinesalesapp-common/api/common/agents";
     request({ method: 'GET', url: reqUrl }, function (error, response, body) {
         if (error || response.statusCode !== 200) {
             console.log("Error from server");
